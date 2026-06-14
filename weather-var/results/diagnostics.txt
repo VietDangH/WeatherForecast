@@ -1,0 +1,46 @@
+== Data preparation ==
+Targets: ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
+Rows  train=26280  val=8784  test=8760
+
+== Stationarity (ADF on train) ==
+        temp: p = 1.013e-08  [stationary]
+          rh: p = 2.776e-23  [stationary]
+         dew: p = 7.552e-10  [stationary]
+    pressure: p = 2.061e-10  [stationary]
+       cloud: p = 2.795e-27  [stationary]
+          wx: p = 1.144e-24  [stationary]
+          wy: p = 5.513e-26  [stationary]
+
+Series already stationary; d=0.
+
+== Lag-order selection (AIC) ==
+Selected lag order p = 48 (maxlags=48)
+Fitted VAR(48) on 26280 differenced train rows, 7 variables.
+
+== Diagnostics ==
+Stability (roots inside unit circle): True
+Ljung-Box residual autocorrelation at lag 24 (p > 0.05 = white noise = good):
+        temp: p = 0.8021  [OK]
+          rh: p = 0.9991  [OK]
+         dew: p = 0.684  [OK]
+    pressure: p = 2.486e-10  [AUTOCORR LEFT]
+       cloud: p = 1  [OK]
+          wx: p = 1  [OK]
+          wy: p = 1  [OK]
+Residual normality (joint): stat = 5.173e+05, p = 0
+  -> non-normal residuals: analytical forecast intervals are approximate.
+WARNING: residual autocorrelation remains — consider larger maxlags.
+
+== Rolling-origin evaluation (test year) ==
+Origins evaluated: 364 (step=24h)
+Overall  MAE = 5.5723   RMSE = 12.0820
+
+Per-variable:
+variable       MAE      RMSE
+    temp  1.118466  1.551867
+      rh  5.601006  7.514832
+     dew  1.103459  1.593179
+pressure  1.089218  1.607733
+   cloud 22.813454 30.107391
+      wx  4.219120  5.733894
+      wy  3.061711  4.299835
