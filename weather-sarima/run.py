@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import sys
+import time
 
 import pandas as pd
 
@@ -229,4 +230,9 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    start_time = time.perf_counter()
+    try:
+        raise SystemExit(main())
+    finally:
+        elapsed = time.perf_counter() - start_time
+        print(f"Elapsed time: {elapsed:.2f} seconds")
