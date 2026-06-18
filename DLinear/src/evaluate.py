@@ -252,7 +252,21 @@ def evaluate():
     per_var = r0['per_var']
     per_horizon = r0['per_horizon']
     N, H, C_out = Yp_real.shape
-    print(f"\nRolling-origin: {N} origins × {H}h forecasts (step=24h)")
+    print(f"\nRolling-origin: {N} origins x {H}h forecasts (step=24h)")
+
+    # -- Per-model save (S and I separately) --
+    for mt in ("DLinear-S", "DLinear-I"):
+        mt_list = [(l, r) for m, l, r in results if m == mt]
+        if not mt_list:
+            continue
+        _, r_mt = mt_list[0]
+        od = config.get_output_dir(mt)
+        os.makedirs(od, exist_ok=True)
+        pd.DataFrame(r_mt['per_var']).T.to_csv(os.path.join(od, 'test_metrics.csv'))
+        with open(os.path.join(od, 'evaluation_results.json'), 'w') as f:
+            json.dump({'model_type': mt, 'overall': r_mt['overall'],
+                       'per_var': r_mt['per_var'], 'per_horizon': r_mt['per_horizon']}, f, indent=2)
+        print(f"[{mt}] Results saved to {od}/")
 
     # ========================================================
     # Report 1: Overall (PROTOCOL §6 breakdown 1)
@@ -317,105 +331,6 @@ def evaluate():
     ax2.legend()
 
     plt.tight_layout()
-    horizon_plot_path = os.path.join(config.OUTPUT_DIR, 'per_horizon_error.png')
-    plt.savefig(horizon_plot_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"\nPer-horizon plot -> {horizon_plot_path}")
-
-    # ========================================================
-    # Plot: Predicted-vs-actual per variable (PROTOCOL §8 required)
-    # ========================================================
-    print(f"\n{'='*60}")
-    print(f" PREDICTED-VS-ACTUAL PLOTS")
-    print(f"{'='*60}")
-    pred_actual_dir = os.path.join(config.OUTPUT_DIR, 'pred_vs_actual')
-    os.makedirs(pred_actual_dir, exist_ok=True)
-    for i, name in enumerate(target_names):
-        plot_path = os.path.join(pred_actual_dir, f'pred_vs_actual_{name.replace(" ", "_").replace("(", "").replace(")", "").replace("/", "_")}.png')
-        plot_prediction_vs_actual(Yt_real, Yp_real, i, name, target_names,
-                                  window_idx=0, save_path=plot_path)
-        print(f"  {name} -> {plot_path}")
-    for w_idx in [len(Yt_real)//4, len(Yt_real)//2, 3*len(Yt_real)//4]:
-        for i in range(min(3, len(target_names))):
-            name = target_names[i]
-            plot_path = os.path.join(pred_actual_dir,
-                f'pred_vs_actual_{name.replace(" ", "_").replace("(", "").replace(")", "").replace("/", "_")}_w{w_idx}.png')
-            plot_prediction_vs_actual(Yt_real, Yp_real, i, name, target_names,
-                                      window_idx=w_idx, save_path=plot_path)
-
-    # ========================================================
-    # Baseline comparison (naive = repeat last, denormalized)
-    # ========================================================
-    target_input_idx = [config.INPUT_FEATURES.index(t) for t in config.TARGET_FEATURES]
-
-    naive_preds = []
-    with torch.no_grad():
-        for X, Y in test_loader:
-            last = X[:, -1:, target_input_idx]
-            naive = last.repeat(1, Y.shape[1], 1)
-            naive_preds.append(naive.cpu().numpy())
-    Y_naive_all = np.concatenate(naive_preds, axis=0)
-    target_mean = scaler.mean_[n_input:]
-    target_scale = scaler.scale_[n_input:]
-    Y_naive_scaled = Y_naive_all[::24]
-    Y_naive_real = Y_naive_scaled * target_scale + target_mean
-
-    naive_m = naive_baseline_denorm(Yt_real, Y_naive_real)
-    impr_mae = (naive_m['MAE'] - overall['MAE']) / naive_m['MAE'] * 100
-    impr_rmse = (naive_m['RMSE'] - overall['RMSE']) / naive_m['RMSE'] * 100
-    print(f"\n{'='*60}")
-    print(f" BASELINE COMPARISON (real scale)")
-    print(f"{'='*60}")
-    print(f"  Naive (repeat last) MAE:  {naive_m['MAE']:.4f}")
-    print(f"  DLinear MAE:              {overall['MAE']:.4f}  ({impr_mae:+.1f}%)")
-    print(f"  Naive (repeat last) RMSE: {naive_m['RMSE']:.4f}")
-    print(f"  DLinear RMSE:             {overall['RMSE']:.4f}  ({impr_rmse:+.1f}%)")
-
-    # ========================================================
-    # Save results
-    # ========================================================
-    pd.DataFrame(per_var).T.to_csv(os.path.join(config.OUTPUT_DIR, 'test_metrics.csv'))
-
-    # Multi-seed aggregate per model type
-    multi_agg = {}
-    for mt in ("DLinear-S", "DLinear-I"):
-        mt_res = [r for m, _, r in results if m == mt]
-        if len(mt_res) > 1:
-            maes = [r['overall']['MAE'] for r in mt_res]
-            rmses = [r['overall']['RMSE'] for r in mt_res]
-            multi_agg[mt] = {
-                'MAE_mean': float(np.mean(maes)), 'MAE_std': float(np.std(maes)),
-                'RMSE_mean': float(np.mean(rmses)), 'RMSE_std': float(np.std(rmses)),
-            }
-
-    # S vs I comparison
-    s_vs_i = None
-    if s_res and i_res:
-        impr_si_mae = (s_res['MAE'] - i_res['MAE']) / s_res['MAE'] * 100
-        impr_si_rmse = (s_res['RMSE'] - i_res['RMSE']) / s_res['RMSE'] * 100
-        s_vs_i = {
-            'DLinear-S': {'MAE': float(s_res['MAE']), 'MAE_std': float(s_res['MAE_std']),
-                          'RMSE': float(s_res['RMSE']), 'RMSE_std': float(s_res['RMSE_std'])},
-            'DLinear-I': {'MAE': float(i_res['MAE']), 'MAE_std': float(i_res['MAE_std']),
-                          'RMSE': float(i_res['RMSE']), 'RMSE_std': float(i_res['RMSE_std'])},
-            'improvement_pct': {'MAE': float(impr_si_mae), 'RMSE': float(impr_si_rmse)},
-        }
-
-    results_json = {
-        'overall': overall,
-        'overall_bootstrap': {'mae_95ci': [float(mae_lo), float(mae_hi)],
-                              'rmse_95ci': [float(rmse_lo), float(rmse_hi)]},
-        'per_variable': {k: {kk: float(vv) for kk, vv in v.items()} for k, v in per_var.items()},
-        'per_horizon': {str(h): {k: float(v) for k, v in m.items()} for h, m in per_horizon.items()},
-        'baseline': {k: float(v) for k, v in naive_m.items()},
-        'improvement_pct': {'MAE': float(impr_mae), 'RMSE': float(impr_rmse)},
-        'multi_seed': multi_agg,
-        's_vs_i_comparison': s_vs_i,
-    }
-    with open(os.path.join(config.OUTPUT_DIR, 'evaluation_results.json'), 'w') as f:
-        json.dump(results_json, f, indent=2)
-
-    print(f"\nResults saved to {config.OUTPUT_DIR}/")
     print(f"  test_metrics.csv, evaluation_results.json, per_horizon_error.png")
     print(f"  pred_vs_actual/ (per-variable predicted-vs-actual plots)")
 
