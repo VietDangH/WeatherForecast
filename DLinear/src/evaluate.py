@@ -266,7 +266,14 @@ def evaluate():
         with open(os.path.join(od, 'evaluation_results.json'), 'w') as f:
             json.dump({'model_type': mt, 'overall': r_mt['overall'],
                        'per_var': r_mt['per_var'], 'per_horizon': r_mt['per_horizon']}, f, indent=2)
-        print(f"[{mt}] Results saved to {od}/")
+        # Predicted-vs-actual plots
+        pa_dir = os.path.join(od, 'pred_vs_actual')
+        os.makedirs(pa_dir, exist_ok=True)
+        for i, name in enumerate(target_names):
+            fn = name.replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_')
+            plot_path = os.path.join(pa_dir, f'pred_vs_actual_{fn}.png')
+            plot_prediction_vs_actual(r_mt['Yt_real'], r_mt['Yp_real'], i, name, target_names, save_path=plot_path)
+        print(f"[{mt}] Results + plots saved to {od}/")
 
     # ========================================================
     # Report 1: Overall (PROTOCOL §6 breakdown 1)
@@ -331,8 +338,6 @@ def evaluate():
     ax2.legend()
 
     plt.tight_layout()
-    print(f"  test_metrics.csv, evaluation_results.json, per_horizon_error.png")
-    print(f"  pred_vs_actual/ (per-variable predicted-vs-actual plots)")
 
     return Yp_real, Yt_real, per_var, target_names, scaler
 
