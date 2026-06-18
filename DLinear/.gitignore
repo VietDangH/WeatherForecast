@@ -2,7 +2,6 @@
 __pycache__/
 checkpoints/
 checkpoints_i/
-outputs/
 *.npz
 *.pkl
 *.pth
