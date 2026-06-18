@@ -156,17 +156,30 @@ def _plots(res, real, scaled, scaler, d, metrics, pred_df, actual_df):
             return evaluate.invert(arr, scaled.values[i], scaler, d)
 
         m, lo, hi = inv(mid), inv(lower), inv(upper)
+
+        # Bootstrap bands (residual resampling) — no normality assumption.
+        bmid, blo, bhi, _ = evaluate.bootstrap_forecast_interval(
+            res, hist, steps=config.HORIZON, n_boot=1000, alpha=0.05)
+        bm, blo, bhi = inv(bmid), inv(blo), inv(bhi)
+
         actual = real.values[i + 1:i + 1 + config.HORIZON]
         vi = 0  # first target variable
         h = np.arange(1, config.HORIZON + 1)
         fig, ax = plt.subplots(figsize=(8, 4.5))
         ax.plot(h, actual[:, vi], marker="o", label="actual")
         ax.plot(h, m[:, vi], marker="x", label="forecast")
-        ax.fill_between(h, lo[:, vi], hi[:, vi], alpha=0.2, label="95% interval")
+        ax.fill_between(h, lo[:, vi], hi[:, vi], alpha=0.25,
+                        label="95% analytical (Gaussian)")
+        ax.fill_between(h, blo[:, vi], bhi[:, vi], alpha=0.0,
+                        edgecolor="C3", facecolor="none", hatch="///",
+                        label="95% bootstrap (resampled residuals)")
+        ax.plot(h, blo[:, vi], color="C3", lw=0.8)
+        ax.plot(h, bhi[:, vi], color="C3", lw=0.8)
         ax.set_xlabel("forecast horizon (h)")
         ax.set_ylabel(cols[vi])
-        ax.set_title(f"24h forecast with 95% interval — {cols[vi]} (first test origin)")
-        ax.legend()
+        ax.set_title(f"24h forecast — analytical vs bootstrap 95% interval — "
+                     f"{cols[vi]} (first test origin)")
+        ax.legend(fontsize=8)
         ax.grid(alpha=0.3)
         fig.tight_layout()
         fig.savefig(os.path.join(config.PLOTS_DIR, f"forecast_interval_{cols[vi]}.png"), dpi=110)

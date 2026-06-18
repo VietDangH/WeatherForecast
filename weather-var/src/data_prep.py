@@ -27,15 +27,18 @@ def load_clean() -> pd.DataFrame:
         df = df.interpolate("time").ffill().bfill()
 
     # Spec's -9999 sensor-error clip; harmless on this dataset (no negatives).
-    for c in ("wind_speed", "wind_gust"):
-        if c in df.columns:
-            df[c] = df[c].clip(lower=0)
+    if "wind_speed" in df.columns:
+        df["wind_speed"] = df["wind_speed"].clip(lower=0)
 
     # Wind decomposition: circular (speed, direction) -> Cartesian (wx, wy).
     rad = np.radians(df["wind_dir"])
     df["wx"] = df["wind_speed"] * np.cos(rad)
     df["wy"] = df["wind_speed"] * np.sin(rad)
-    return df
+
+    # Keep only the columns the project uses; drop any unused raw columns
+    # (precipitation, soil moisture, gusts, low/mid/high cloud, etc.).
+    keep = ["temp", "rh", "dew", "pressure", "cloud", "wind_speed", "wind_dir", "wx", "wy"]
+    return df[[c for c in keep if c in df.columns]]
 
 
 def split(df: pd.DataFrame):

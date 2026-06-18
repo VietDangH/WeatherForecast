@@ -31,6 +31,40 @@ def invert(fc, last_scaled, scaler, d):
     return fc_scaled
 
 
+def bootstrap_forecast_interval(res, hist, steps, n_boot=1000, alpha=0.05, seed=0):
+    """Forecast prediction bands by resampling the VAR residuals.
+
+    Unlike ``res.forecast_interval`` (which assumes Gaussian residuals), this
+    simulates ``n_boot`` future paths, drawing each step's shock from the
+    empirical residual distribution. Robust when residual normality is rejected.
+
+    Works in model space (levels for d=0). Returns (mid, lower, upper, sims),
+    all in model space; invert with :func:`invert` before scoring/plotting.
+    """
+    rng = np.random.default_rng(seed)
+    p, k = res.k_ar, res.neqs
+    coefs = res.coefs           # (p, k, k): A_1 .. A_p
+    intercept = res.intercept   # (k,)
+    resid = res.resid.values if hasattr(res.resid, "values") else np.asarray(res.resid)
+
+    hist = np.asarray(hist)[-p:]            # last p obs, oldest..newest
+    sims = np.empty((n_boot, steps, k))
+    for b in range(n_boot):
+        y = [row.copy() for row in hist]    # rolling window of recent obs
+        for h in range(steps):
+            mu = intercept.copy()
+            for i in range(p):
+                mu = mu + coefs[i] @ y[-(i + 1)]
+            yt = mu + resid[rng.integers(len(resid))]
+            y.append(yt)
+            sims[b, h] = yt
+
+    lo = np.percentile(sims, 100 * alpha / 2, axis=0)
+    hi = np.percentile(sims, 100 * (1 - alpha / 2), axis=0)
+    mid = sims.mean(axis=0)
+    return mid, lo, hi, sims
+
+
 def rolling_origin(res, real_df, scaled_df, scaler, d=config.DIFF_ORDER,
                    horizon=config.HORIZON, step=config.ROLL_STEP):
     """Run the rolling evaluation.

@@ -27,7 +27,8 @@ TEST_YEARS = [2025]                # untouched until final rolling eval
 # Forecast / model
 # ----------------------------------------------------------------------------
 HORIZON = 24        # forecast 24 hours ahead (shared with the group)
-MAXLAGS = 48        # upper bound for AIC lag-order search
+MAXLAGS = 60        # upper bound for AIC lag-order search (AIC settles at p=50,
+                    # an interior minimum; 60 leaves headroom so it isn't a ceiling)
 ROLL_STEP = 24      # rolling-origin step: 24 = non-overlapping, 1 = overlapping
 DIFF_ORDER = 1      # default first difference; confirmed/adjusted by ADF at runtime
 STANDARDIZE = False # VAR doesn't require scaling; enable for numerical stability
@@ -35,27 +36,22 @@ STANDARDIZE = False # VAR doesn't require scaling; enable for numerical stabilit
 # ----------------------------------------------------------------------------
 # Raw -> clean column names (matched on the prefix before the unit, so encoding
 # of the degree/cube symbols in the CSV header is irrelevant).
+# Only the columns this project uses are mapped: the 5 direct targets plus
+# wind_speed/wind_dir (sources for the engineered wx/wy). Any other raw columns
+# in the CSV are loaded but ignored.
 # ----------------------------------------------------------------------------
 PREFIX_RENAME = {
     "temperature_2m": "temp",
     "relative_humidity_2m": "rh",
     "dew_point_2m": "dew",
-    "precipitation": "precip",
     "surface_pressure": "pressure",
     "cloud_cover": "cloud",
-    "cloud_cover_low": "cloud_low",
-    "cloud_cover_mid": "cloud_mid",
-    "cloud_cover_high": "cloud_high",
     "wind_speed_10m": "wind_speed",
     "wind_direction_10m": "wind_dir",
-    "wind_gusts_10m": "wind_gust",
-    "soil_moisture_0_to_7cm": "soil",
 }
 
 # ----------------------------------------------------------------------------
 # The 7 modeled weather variables.
-# EDIT THIS LIST to match the group's agreed target set exactly.
-# Available clean names: temp, rh, dew, precip, pressure, cloud, cloud_low,
-# cloud_mid, cloud_high, wind_speed, wind_dir, wind_gust, soil, wx, wy
+# Clean names: temp, rh, dew, pressure, cloud (direct) + wx, wy (from wind).
 # ----------------------------------------------------------------------------
 TARGETS = ["temp", "rh", "dew", "pressure", "cloud", "wx", "wy"]
