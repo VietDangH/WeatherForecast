@@ -6,7 +6,7 @@ Xem PROTOCOL.md để biết chi tiết các ràng buộc.
 import os
 
 # -- Đường dẫn ------------------------------------------
-_DLIN_DIR = os.path.dirname(os.path.abspath(__file__))
+_DLIN_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # DLinear/
 
 OUTPUT_DIR = os.path.join(_DLIN_DIR, "outputs")
 PROCESSED_DATA_PATH = os.path.join(OUTPUT_DIR, "processed_data.npz")
@@ -15,6 +15,7 @@ FEATURE_NAMES_PATH = os.path.join(OUTPUT_DIR, "feature_names.json")
 TARGET_NAMES_PATH = os.path.join(OUTPUT_DIR, "target_names.json")
 
 CHECKPOINT_DIR = os.path.join(_DLIN_DIR, "checkpoints")
+CHECKPOINT_DIR_I = os.path.join(_DLIN_DIR, "checkpoints_i")
 
 # -- DATA_PATH -------------------------------------------
 DATA_PATH = os.path.join(os.path.dirname(_DLIN_DIR), "weather_dataset.csv")
@@ -57,9 +58,6 @@ PROTOCOL_TEST_YEAR = 2025
 # -- DLinear Architecture -------------------------------
 MODEL_TYPE = "DLinear-S"
 KERNEL_SIZE = 25
-
-# DLinear-I checkpoints (kept separate from S for comparison)
-CHECKPOINT_DIR_I = os.path.join(_DLIN_DIR, "checkpoints_i")
 
 OUTPUT_DIR_S = os.path.join(OUTPUT_DIR, "S")
 OUTPUT_DIR_I = os.path.join(OUTPUT_DIR, "I")
