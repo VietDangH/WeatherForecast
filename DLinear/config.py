@@ -31,13 +31,12 @@ TARGET_FEATURES = [
     'wy',
 ]
 
-# -- Protocol: Input features (12) -----------------------
-# 8 weather + 4 cyclical time encodings
+# -- Protocol: Input features (11) -----------------------
+# 7 weather + 4 cyclical time encodings (precipitation removed by team decision)
 INPUT_FEATURES = [
     'temperature_2m (°C)',
     'relative_humidity_2m (%)',
     'dew_point_2m (°C)',
-    'precipitation (mm)',
     'surface_pressure (hPa)',
     'cloud_cover (%)',
     'wx',
@@ -106,8 +105,8 @@ SEED = 42
 def _validate_protocol():
     """Kiểm tra protocol — raise AssertionError nếu vi phạm."""
     # Feature counts
-    assert len(INPUT_FEATURES) == 12, \
-        f"Protocol requires 12 input features, got {len(INPUT_FEATURES)}"
+    assert len(INPUT_FEATURES) == 11, \
+        f"Protocol requires 11 input features, got {len(INPUT_FEATURES)}"
     assert len(TARGET_FEATURES) == 7, \
         f"Protocol requires 7 target variables, got {len(TARGET_FEATURES)}"
 

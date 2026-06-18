@@ -2,7 +2,6 @@
   "temperature_2m (\u00b0C)",
   "relative_humidity_2m (%)",
   "dew_point_2m (\u00b0C)",
-  "precipitation (mm)",
   "surface_pressure (hPa)",
   "cloud_cover (%)",
   "wx",
