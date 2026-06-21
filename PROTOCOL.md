@@ -11,11 +11,13 @@ Model-specific deviations are called out explicitly under each section.
 
 - Source: hourly weather export (Open-Meteo style), file `weather_dataset.csv`.
 - Coverage: **2021-01-01 → 2025-12-31**, hourly, **43,824 rows, no gaps, no nulls**.
-- Raw columns (clean name in parentheses):
+- Columns used (clean name in parentheses) — the CSV may contain other raw columns,
+  but the project uses only these:
   `temperature_2m (temp)`, `relative_humidity_2m (rh)`, `dew_point_2m (dew)`,
-  `precipitation (precip)`, `surface_pressure (pressure)`, `cloud_cover (cloud)`,
-  `cloud_cover_low/mid/high`, `wind_speed_10m (wind_speed)`, `wind_direction_10m (wind_dir)`,
-  `wind_gusts_10m (wind_gust)`, `soil_moisture_0_to_7cm (soil)`.
+  `surface_pressure (pressure)`, `cloud_cover (cloud)`,
+  `wind_speed_10m (wind_speed)`, `wind_direction_10m (wind_dir)`.
+  `wind_speed`/`wind_dir` are inputs only — they are decomposed into the engineered
+  targets `wx`/`wy` (§2) and not modeled directly.
 
 > If your raw data is 10-minute resolution, resample to hourly (mean per hour) first.
 > This dataset is already hourly, so no resampling is applied.
@@ -177,3 +179,26 @@ The VAR reference pipeline lives in [`weather-var/`](weather-var/):
 `run.py` → `src/{config,data_prep,var_model,diagnostics,evaluate}.py`,
 writing `results/metrics.csv`, `results/diagnostics.txt`, and `results/plots/`.
 Run with: `python weather-var/run.py`.
+
+---
+
+## 11. EDA evidence for the design choices
+
+The exploratory analysis backing the decisions above lives in a single notebook,
+[`eda.ipynb`](eda.ipynb): **Part A** is the overview (distributions, weekly/seasonal
+plots, correlations, wind rose, outliers); **Part B** is the time-series diagnostics
+aligned to the VAR assumptions. Key findings that justify the protocol:
+
+| Finding (`eda.ipynb`, Part B) | Supports |
+|---|---|
+| **ADF + KPSS agree** the targets are level-stationary; rolling mean/variance are flat aside from an **annual cycle** (not a unit-root trend). | `d = 0` (fit on levels, §5.1) |
+| **PACF** cuts off after a few lags with a clear **lag-24 spike** (daily cycle). | VAR lag order `p` (AIC + the 24 h structure, §5.1) |
+| **Seasonal decomposition** isolates a strong daily cycle and a smooth annual component; residual is near-stationary. | optional seasonal exog (hour + day-of-year sin/cos) as an experiment |
+| **Lagged cross-correlations** are strong off-diagonal (e.g. `temp`↔`dew`/`rh`, wind components). | multivariate VAR over 7 separate univariate models |
+
+> **Lag order:** AIC has a genuine interior minimum at `p=50` (`maxlags=60`); BIC/HQIC prefer a
+> lighter `p=26`. At `p=50` all seven residual series pass Ljung-Box (including `pressure`,
+> p=0.073), the VAR is stable, and only joint residual **normality** is rejected — which affects
+> *analytical* forecast bands only. Use the **bootstrap** prediction interval
+> (`evaluate.bootstrap_forecast_interval`, residual resampling) instead; it makes no normality
+> assumption. See `results/plots/forecast_interval_temp.png` for the analytical-vs-bootstrap overlay.

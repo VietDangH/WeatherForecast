@@ -1,0 +1,532 @@
+% ================================================================
+
+% ================================================================
+
+\section{DLinear}
+\label{sec:dlinear}
+
+\subsection{Overview}
+
+DLinear \citep{zeng2023dlinear} is a decomposition-based linear model that
+challenges the prevailing trend of applying complex Transformer architectures
+to time series forecasting. The core insight is that a time series can be
+separated into a slow-moving trend and a fast-moving seasonal component, each
+forecast independently with a single linear layer, then recombined. Despite
+extreme simplicity --- only 5,892 parameters for the shared-weight variant ---
+DLinear matches or exceeds state-of-the-art Transformers on standard benchmarks
+while training orders of magnitude faster.
+
+In this project, DLinear is applied as a \textbf{multivariate multi-step}
+forecaster: a single model consumes the full $120 \times 11$ input window
+(7 weather channels + 4 cyclical time encodings) and outputs a $24 \times 7$
+forecast block covering all seven protocol targets simultaneously. A final linear
+projection layer maps the 11 input channels to the 7 output targets, allowing the
+model to exploit cross-variable dependencies learned from data.
+
+Two variants are evaluated:
+\begin{itemize}
+  \item \textbf{DLinear-S} (Shared): one pair of trend/seasonal linear layers
+        shared across all 11 input channels --- 5,892 parameters.
+  \item \textbf{DLinear-I} (Individual): per-channel trend/seasonal linear
+        layers --- 63,972 parameters.
+\end{itemize}
+
+% ---------------------------------------------------------------
+\subsection{Mathematical Formulation}
+% ---------------------------------------------------------------
+
+Let $\mathbf{X} \in \mathbb{R}^{L \times C_{\text{in}}}$ be an input window of
+$L = 120$ hours and $C_{\text{in}} = 11$ features (7 weather variables + 4
+cyclical time encodings). The model produces
+$\mathbf{\hat{Y}} \in \mathbb{R}^{H \times C_{\text{out}}}$ with $H = 24$ hours
+and $C_{\text{out}} = 7$ target variables.
+
+\subsubsection{Series Decomposition}
+
+A 1D average pooling with kernel size $k = 25$ and stride 1 extracts the trend
+while preserving sequence length. For a sequence of length $L$, the first and
+last time steps are replicated $p = (k-1)/2 = 12$ times and concatenated to both
+ends before pooling --- a technique called \textbf{replication padding} used by
+the official implementation \citep{zeng2023dlinear}:
+%
+\begin{equation}
+\mathbf{X}_{\text{padded}} = [\,\underbrace{\mathbf{X}_0, \ldots, \mathbf{X}_0}_{p \text{ times}},\;
+        \mathbf{X}_0, \ldots, \mathbf{X}_{L-1},\;
+        \underbrace{\mathbf{X}_{L-1}, \ldots, \mathbf{X}_{L-1}}_{p \text{ times}}\,]
+        \quad \in \mathbb{R}^{(L + 2p) \times C_{\text{in}}}
+\end{equation}
+%
+\begin{equation}
+\mathbf{T} = \text{AvgPool1d}\big(\mathbf{X}_{\text{padded}},\;
+            \text{kernel}=k,\; \text{padding}=0\big)
+            \quad \in \mathbb{R}^{L \times C_{\text{in}}}
+\end{equation}
+%
+\begin{equation}
+\mathbf{S} = \mathbf{X} - \mathbf{T} \quad \in \mathbb{R}^{L \times C_{\text{in}}}
+\end{equation}
+%
+At each position $t$, the trend is the unweighted mean of the $k$ values in the
+local window:
+%
+\begin{equation}
+\mathbf{T}_t = \frac{1}{k} \sum_{j=t-p}^{t+p} \mathbf{X}_{\text{padded}, j}
+\end{equation}
+
+The kernel size $k=25$ spans just over one full diurnal cycle (24 h), causing
+the day--night oscillation to approximately cancel when averaged, leaving only
+the multi-day trend. The seasonal component $\mathbf{S}$ captures all remaining
+variation: diurnal cycles, short-term fluctuations, and noise.
+
+\paragraph{Why replication padding.}
+At the boundaries ($t < p$ and $t \ge L-p$), the kernel extends beyond available
+data. Repeating the boundary values --- rather than padding with zeros ---
+encodes a \textbf{persistence} assumption: if nothing is known beyond the edge,
+the most conservative guess is that conditions remain unchanged. Concretely, at
+the leftmost position:
+%
+\begin{equation}
+\mathbf{T}_0 = \frac{\overbrace{\mathbf{X}_0 + \cdots + \mathbf{X}_0}^{p+1 \text{ times}}
+        + \mathbf{X}_1 + \cdots + \mathbf{X}_p}{k}
+        = \frac{(p+1)\,\mathbf{X}_0 + \sum_{j=1}^{p} \mathbf{X}_j}{k}
+\end{equation}
+%
+All $k=25$ positions in the kernel contain real observations or faithful copies;
+no position is underweighted. The first and last 12 positions (24 of 120 h, 20\%
+of the lookback window) are affected; the rightmost 12 are the hours closest to
+the forecast origin, where the signal is most informative for short-horizon
+prediction.
+
+\subsubsection{Dual Linear Projection}
+
+Each component is independently mapped from the 120 h lookback to the 24 h
+forecast horizon via a single linear layer:
+%
+\begin{align}
+\mathbf{\hat{Y}}_t &= \mathbf{W}_t \, \mathbf{T} + \mathbf{b}_t
+        \quad \in \mathbb{R}^{H \times C_{\text{in}}}
+        \qquad \text{(Trend forecast)} \\
+\mathbf{\hat{Y}}_s &= \mathbf{W}_s \, \mathbf{S} + \mathbf{b}_s
+        \quad \in \mathbb{R}^{H \times C_{\text{in}}}
+        \qquad \text{(Seasonal forecast)}
+\end{align}
+%
+where $\mathbf{W}_t, \mathbf{W}_s \in \mathbb{R}^{H \times L}$ and
+$\mathbf{b}_t, \mathbf{b}_s \in \mathbb{R}^{H}$.
+
+\begin{itemize}
+  \item \textbf{DLinear-S}: a single pair $(\mathbf{W}_t, \mathbf{W}_s)$ is
+        shared across all $C_{\text{in}}$ channels.
+  \item \textbf{DLinear-I}: each channel $c \in \{1, \ldots, C_{\text{in}}\}$
+        has its own pair $\mathbf{W}_t^{(c)}, \mathbf{W}_s^{(c)} \in
+        \mathbb{R}^{H \times L}$, implemented as $C_{\text{in}}$ separate
+        \texttt{nn.Linear(L, H)} modules.
+\end{itemize}
+
+\subsubsection{Combine and Project}
+%
+\begin{align}
+\mathbf{\hat{Y}}_{\text{raw}} &= \mathbf{\hat{Y}}_t + \mathbf{\hat{Y}}_s
+        \quad \in \mathbb{R}^{H \times C_{\text{in}}} \\
+\mathbf{\hat{Y}} &= \mathbf{\hat{Y}}_{\text{raw}} \, \mathbf{W}_{\text{proj}}
+        \quad \in \mathbb{R}^{H \times C_{\text{out}}}
+\end{align}
+%
+$\mathbf{W}_{\text{proj}} \in \mathbb{R}^{C_{\text{in}} \times C_{\text{out}}}$
+maps the $C_{\text{in}}$ input channels to the $C_{\text{out}}$ protocol targets.
+This projection is linear and data-driven: the model learns weighted combinations
+of input channels for each target variable (e.g.\ $wx$ and $wy$ may contribute to
+predicting each other, temperature helps predict dew point).
+
+\textbf{Parameter count:}
+\begin{itemize}
+  \item DLinear-S: $2 \times (LH + H) \times 1 + C_{\text{in}} C_{\text{out}}
+        = \mathbf{5{,}892}$
+  \item DLinear-I: $2 \times (LH + H) \times C_{\text{in}} + C_{\text{in}}
+        C_{\text{out}} = \mathbf{63{,}972}$
+\end{itemize}
+
+\subsubsection{Why Decomposition Helps}
+
+The decomposition acts as an \textbf{inductive bias}. The trend branch only needs
+to learn a smooth continuation (``is it getting warmer or cooler over the next 24
+hours?''), while the seasonal branch only needs to capture the repeating diurnal
+pattern (``at what hour does the daily peak occur?''). By separating these two
+structurally different tasks, each linear layer solves a simpler problem than one
+layer would face on the raw mixed signal.
+
+\textbf{Concrete example (first 48 h of 2021, temperature):}
+\begin{table}[H]
+\centering
+\caption{Decomposition of the first 48 hours of temperature (2021).}
+\begin{tabular}{lll}
+\toprule
+Component & Value range & Meaning \\
+\midrule
+Raw temp  & $9.4 \to 18.1$\,°C & Day--night oscillation on warming trend \\
+Trend ($k=25$) & $5.4 \to 11.4$\,°C & Smooth multi-day warming of $\sim$6\,°C \\
+Seasonal & $+4.0$ at noon, $-3.0$ at midnight & Clean 24 h cycle, $\sim\pm 5$\,°C amplitude \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------
+\subsection{Pipeline Overview}
+% ---------------------------------------------------------------
+
+Figure~\ref{fig:dlinear-arch} illustrates the DLinear architecture. The model
+takes a multivariate input window, decomposes it into trend and seasonal
+components via a moving-average kernel, maps each component independently through
+linear layers to the forecast horizon, and recombines them with a learned
+cross-channel projection.
+
+\begin{figure}[H]
+\centering
+\fbox{%
+\begin{minipage}{0.95\textwidth}
+\vspace{6pt}
+\[
+\underbrace{\mathbf{X} \in \mathbb{R}^{L \times C_{\text{in}}}}_{120\,\text{h} \times 11}
+\;\;
+\begin{cases}
+\;\xrightarrow{\text{AvgPool1d}(k=25)}\;
+\underbrace{\mathbf{T} \in \mathbb{R}^{L \times C_{\text{in}}}}_{\text{Trend}}
+\;\xrightarrow{\;\mathbf{W}_t \in \mathbb{R}^{H \times L}\;}\;
+\underbrace{\mathbf{\hat{Y}}_t}_{\text{Trend forecast}}
+&\hspace{-4pt}\searrow \\
+&\hspace{-4pt}\Bigg\downarrow \scriptstyle + \;\;
+\underbrace{\mathbf{\hat{Y}}}_{\mathbb{R}^{H \times C_{\text{out}}}}
+\;\xleftarrow{\;\mathbf{W}_{\text{proj}}\;}
+\;\underbrace{\mathbf{\hat{Y}}_{\text{raw}}}_{\mathbb{R}^{H \times C_{\text{in}}}}
+\\
+\;\xrightarrow{\mathbf{X} - \mathbf{T}}\;
+\underbrace{\mathbf{S} \in \mathbb{R}^{L \times C_{\text{in}}}}_{\text{Seasonal}}
+\;\xrightarrow{\;\mathbf{W}_s \in \mathbb{R}^{H \times L}\;}\;
+\underbrace{\mathbf{\hat{Y}}_s}_{\text{Seasonal forecast}}
+&\hspace{-4pt}\nearrow
+\end{cases}
+\]
+\vspace{4pt}
+\small
+\centering
+\textbf{DLinear-S}: one pair $(\mathbf{W}_t,\mathbf{W}_s)$ shared across all $C_{\text{in}}$ channels
+\qquad
+\textbf{DLinear-I}: per-channel $\mathbf{W}_t^{(c)},\mathbf{W}_s^{(c)}$ for $c=1,\ldots,C_{\text{in}}$
+\vspace{4pt}
+\end{minipage}}
+\caption{DLinear architecture: decomposition $\to$ dual linear projection $\to$ combine $\to$ project.}
+\label{fig:dlinear-arch}
+\end{figure}
+
+% ---------------------------------------------------------------
+\subsection{Training Procedure}
+% ---------------------------------------------------------------
+
+\textbf{One model, all targets.} Unlike XGBoost (which trains one regressor per
+target), a single DLinear model predicts all seven targets jointly. The final
+projection layer $\mathbf{W}_{\text{proj}}$ learns cross-target relationships
+directly from the training data.
+
+\textbf{Data usage.} The model trains on the full 2021--2023 sliding windows at
+stride 1 (26,137 windows). Every window conditions strictly on observations
+before the target horizon, preventing leakage. No subsampling or stride reduction
+is applied --- the model is fast enough to use all available windows.
+
+\textbf{Validation and early stopping.} Training minimizes MSE with the Adam
+optimizer \citep{kingma2015adam}. A ReduceLROnPlateau scheduler halves the
+learning rate when validation loss fails to improve for 5 epochs. Early stopping
+terminates training when validation loss does not improve for 10 consecutive
+epochs, capped at 50 epochs total. All hyperparameters
+(Table~\ref{tab:dlinear-hparams}) are fixed a priori --- there is no grid search
+--- and the 2025 test set is never seen during training.
+
+\textbf{Convergence.} On an NVIDIA GeForce RTX 4060 GPU, DLinear-S converges in
+$\sim$85 s per seed to a mean validation MSE of $0.3538 \pm 1.6\!\times\!10^{-4}$
+(3 seeds). DLinear-I converges in $\sim$233 s per seed to
+$0.3451 \pm 5.7\!\times\!10^{-4}$. Both plateau smoothly without divergence:
+validation loss slopes over the last 10 epochs are $-1.5 \times 10^{-4}$ (S) and
+$-3.6 \times 10^{-4}$ (I) --- both effectively flat. The train--validation loss
+gap is small (S: $-0.030$; I: $-0.036$), indicating no overfitting.
+
+\textbf{Multi-seed training.} Per protocol \S8, three seeds
+$\{42, 123, 456\}$ are trained and checkpoints saved for each seed per variant.
+The purely linear optimization landscape is near-convex, leading to highly
+consistent convergence regardless of random initialization: across 3 seeds, MAE
+standard deviation is $0.004$ for S and $0.023$ for I.
+
+\begin{table}[H]
+\centering
+\caption{DLinear training hyperparameters.}
+\label{tab:dlinear-hparams}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Optimizer      & Adam \\
+Learning rate  & $10^{-3}$ \\
+Weight decay   & $10^{-5}$ \\
+Loss           & MSE \\
+Batch size     & 64 \\
+LR scheduler   & ReduceLROnPlateau (factor 0.5, patience 5) \\
+Early stopping & Patience 10 epochs, max 50 \\
+Kernel size    & 25 \\
+Seeds          & $\{42, 123, 456\}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------
+\subsection{Algorithm}
+% ---------------------------------------------------------------
+
+\begin{spacing}{1.0}
+\begin{algorithm}[H]
+\small
+\caption{DLinear training and rolling-origin evaluation}
+\label{alg:dlinear}
+\begin{algorithmic}[1]
+\Require Hourly series $S[0..T]$; $L=120$; $H=24$; $V=7$; $k=25$;
+         seeds $\{42,123,456\}$
+\State \textbf{Preprocess:}
+\State \quad Parse time; clip wind $\ge 0$
+\State \quad $wx = \text{speed}\cdot\cos(\text{dir})$,\;
+        $wy = \text{speed}\cdot\sin(\text{dir})$
+\State \quad Add $\sin$/$\cos$ hour-of-day, day-of-year
+\State \quad Chronological split: train(2021--23), val(2024), test(2025)
+\State \quad Fit StandardScaler on train, transform all
+\State \textbf{Generate sliding windows} (stride 1):
+\State \quad $X[i] = S[i:i+L] \in \mathbb{R}^{L \times 11}$,\;
+        $Y[i] = S[i+L:i+L+H] \in \mathbb{R}^{H \times 7}$
+\For{each seed $s \in \{42,123,456\}$}
+  \State Init.\ DLinear($k=25$, individual)
+  \For{epoch $=1$ to $50$}
+    \State $\mathbf{T} = \text{AvgPool1d}(\mathbf{X})$;\;
+          $\mathbf{S} = \mathbf{X} - \mathbf{T}$
+    \State $\mathbf{\hat{Y}} = (\mathbf{W}_t\mathbf{T} + \mathbf{b}_t)
+           + (\mathbf{W}_s\mathbf{S} + \mathbf{b}_s)$
+    \State $\mathbf{\hat{Y}} \gets \mathbf{\hat{Y}}\,\mathbf{W}_{\text{proj}}$
+    \State $\mathcal{L} = \text{MSE}(\mathbf{\hat{Y}}, \mathbf{Y})$
+    \State Adam step; update $\mathbf{W}_t,\mathbf{W}_s,\mathbf{W}_{\text{proj}}$
+    \If{val loss stagnant 5 epochs} \State $\eta \gets \eta \times 0.5$ \EndIf
+    \If{val loss stagnant 10 epochs} \State \textbf{break} \EndIf
+  \EndFor
+  \State Save best checkpoint
+\EndFor
+\State \textbf{Rolling-origin evaluation} (test 2025, step 24 h, $N\approx 360$):
+\For{each origin $t$}
+  \State $\mathbf{\hat{Y}}_t = \text{model}\big(S[t-L:t]\big)
+         \in \mathbb{R}^{24 \times 7}$
+  \State Inverse-transform $\mathbf{\hat{Y}}_t$ to real scale
+\EndFor
+\State \textbf{Aggregate:} overall MAE/RMSE; per-variable; per-horizon;
+       bootstrap 95\% CI
+\end{algorithmic}
+\end{algorithm}
+\end{spacing}
+
+% ---------------------------------------------------------------
+\subsection{Experimental Results}
+% ---------------------------------------------------------------
+
+Evaluated by rolling-origin over the 2025 test year ($N = 360$ non-overlapping
+origins, step = 24 h, real scale). Both variants substantially outperform the
+naive repeat-last-value baseline (MAE = 6.71). Values are ensemble-mean across
+3 seeds $\{42, 123, 456\}$.
+
+\subsubsection{Overall Performance}
+
+\begin{table}[H]
+\centering
+\caption{Overall test-set performance (2025, real scale, 3-seed ensemble).}
+\label{tab:dlinear-overall}
+\begin{tabular}{lcccccr}
+\toprule
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{MAE 95\% CI} &
+\textbf{RMSE 95\% CI} & \textbf{Params} & \textbf{Train} \\
+\midrule
+DLinear-S & 5.79 & 12.27 & [5.59, 5.99] & [11.73, 12.79] & 5,892   & 85 s \\
+DLinear-I & 5.64 & 12.19 & [5.41, 5.82] & [11.63, 12.70] & 63,972  & 233 s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+DLinear-I improves over DLinear-S by $+2.7\%$ (MAE) and $+0.6\%$ (RMSE), at the
+cost of $10.9\times$ more parameters. This aligns with the original paper's
+findings \citep{zeng2023dlinear}: individual weights remove the forced compromise
+of sharing one temporal pattern across physically diverse channels, allowing each
+variable to learn its own dynamics. The RMSE/MAE ratio is $\sim$2.1 for both
+variants, indicating occasional large errors driven by cloud cover and wind
+extremes. Bootstrap 95\% CIs (1000 resamples) are narrow (width $<4\%$),
+confirming stable metric estimates.
+
+\subsubsection{Per-Variable Error}
+
+\begin{table}[H]
+\centering
+\caption{Per-variable MAE (real scale, 2025).}
+\label{tab:dlinear-pervar}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Target} & \textbf{S MAE} & \textbf{I MAE} & \textbf{Unit} & \textbf{I vs.\ S} \\
+\midrule
+temperature       & 1.22 & 1.18 & °C   & $+2.7\%$ \\
+dew\_point        & 1.28 & 1.19 & °C   & $+6.4\%$ \\
+surface\_pressure & 1.33 & 1.13 & hPa  & $+15.2\%$ \\
+relative\_humidity& 5.70 & 5.64 & \%   & $+1.1\%$ \\
+wx                & 4.47 & 4.39 & km/h & $+1.8\%$ \\
+wy                & 3.10 & 3.07 & km/h & $+1.1\%$ \\
+cloud\_cover      & 23.41& 23.00& \%   & $+1.8\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+DLinear-I improves on every variable. The largest gain is surface pressure
+($+15.2\%$), whose slow-varying, weak-diurnal-cycle dynamics differ fundamentally
+from temperature and humidity (strong 24 h cycle). Shared weights force a
+compromise across these diverse patterns; individual weights remove this
+constraint, confirming the paper's channel-independence hypothesis.
+
+Cloud cover remains the hardest target across all models (MAE $\sim$23\%), driven
+by its bimodal distribution (clustered at 0\% and 100\%) and weak linear
+correlation with other variables.
+
+\subsubsection{Per-Horizon Error Growth}
+
+Error grows approximately 2.0$\times$ from $h=1$ to $h=24$ (DLinear-S):
+
+\begin{table}[H]
+\centering
+\caption{Per-horizon MAE (DLinear-S, 2025 test).}
+\begin{tabular}{lccccccc}
+\toprule
+Horizon & $h=1$ & $h=4$ & $h=8$ & $h=12$ & $h=16$ & $h=20$ & $h=24$ \\
+\midrule
+MAE & 3.46 & 4.58 & 5.07 & 5.77 & 6.75 & 6.82 & 7.03 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The error growth is approximately linear with horizon. The plateau between
+$h=20$ and $h=24$ suggests the model's uncertainty saturates beyond roughly
+20 hours --- additional lookback or auxiliary features may be needed for
+long-horizon forecasts.
+
+\subsubsection{Diagnostic Summary}
+
+\begin{table}[H]
+\centering
+\caption{Protocol \S6 diagnostic results (2025 test).}
+\small
+\begin{tabular}{l p{2.3cm} p{2.3cm} p{5.2cm}}
+\toprule
+\textbf{Check} & \textbf{DLinear-S} & \textbf{DLinear-I} &
+\textbf{Interpretation} \\
+\midrule
+ADF stationarity
+  & PASS ($p\approx 0$)
+  & PASS ($p\approx 0$)
+  & All 7 targets stationary, $d=0$ \\
+Stability
+  & PASS (slope $-1.5\!\times\!10^{-4}$)
+  & PASS (slope $-3.6\!\times\!10^{-4}$)
+  & Flat val loss, fully converged \\
+Ljung--Box (lag 24)
+  & 76/168 (45\%)
+  & 90/168 (54\%)
+  & Autocorrelation at short horizons ($h=1..6$); pressure
+    \& dew\_point worst per Protocol \S11 \\
+Normality
+  & FAIL ($p\approx 0$)
+  & FAIL ($p\approx 0$)
+  & Expected --- cloud bimodal, wind heavy-tailed \\
+Forecast int.\ (95\%)
+  & Temp $\pm 1.85\!\to\!\pm 2.90$\,°C
+  & Temp $\pm 1.64\!\to\!\pm 2.76$\,°C
+  & Monotonic widening; pressure widens $\times 5.3$ in I \\
+Bootstrap CI (MAE)
+  & $\pm 3.5\%$
+  & $\pm 3.7\%$
+  & Narrow ($<5\%$), reliable metrics \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{ADF:} All seven target variables are stationary at the 1\% level --- no
+differencing is needed.
+
+\textbf{Ljung--Box:} Residual autocorrelation is present in roughly half of the
+168 horizon-variable pairs, concentrated at short horizons ($h=1..6$) and in
+pressure and dew\_point --- variables Protocol \S11 identifies as having known
+long memory. DLinear-I's individual weights partially mitigate this (54\% pass
+vs.\ 45\% for S).
+
+\textbf{Residual normality:} Universally rejected, as expected. Cloud residuals
+are U-shaped (bimodal target), wind residuals are heavy-tailed (gust events).
+Gaussian-based confidence intervals would be unreliable; empirical quantile-based
+intervals are used instead.
+
+\textbf{Forecast intervals:} All variables show monotonic widening from $h=1$ to
+$h=24$. Pressure widens most aggressively ($\times 5.3$ in DLinear-I) due to its
+long-memory structure --- the model's uncertainty about pressure grows faster
+than for temperature ($\times 1.6$).
+
+\textbf{Bootstrap CI:} MAE confidence interval width under $\pm 4\%$ for both
+variants confirms stable metric estimates.
+
+% ---------------------------------------------------------------
+\subsection{Analysis}
+% ---------------------------------------------------------------
+
+\subsubsection{What DLinear Does Well}
+
+\textbf{Variables with strong diurnal cycles} (temperature, dew point, relative
+humidity) are forecast tightly. Temperature MAE of 1.18\,°C (DLinear-I) is
+competitive with the best models in this study. This is a direct consequence of
+the decomposition design: the seasonal branch is purpose-built to capture the
+24 h oscillation, and the sinusoidal time encodings give the model explicit
+knowledge of where it sits within the cycle.
+
+\textbf{Surface pressure} benefits most from individual weights ($+15.2\%$ I over
+S). Unlike temperature, pressure does not follow a clean 24 h sinusoid --- its
+variations are driven by synoptic-scale weather systems evolving over multiple
+days. Shared weights, dominated by the strong diurnal signals of temperature and
+humidity, are suboptimal for pressure. Individual weights free pressure's linear
+layers to learn its own, slower temporal dynamics.
+
+\subsubsection{What DLinear Struggles With}
+
+\textbf{Cloud cover} is the hardest variable (MAE $\sim$23\%) across both
+variants and all models in this study. Three factors conspire: (a) cloud cover is
+fundamentally bimodal (clear = 0\%, overcast = 100\%), making MSE poorly suited;
+(b) it has the weakest linear correlation with other variables; (c) its
+transitions (clear $\leftrightarrow$ overcast) are often sharp and driven by
+unobserved atmospheric processes. A dedicated classification-based approach may
+be warranted.
+
+\textbf{Wind components} ($wx$, $wy$) have moderate MAE (3--4 km/h) but high
+RMSE/MAE ratios ($\sim$1.4), indicating occasional large misses during gust
+events. Wind gusts are inherently stochastic at hourly resolution --- the 120 h
+lookback contains limited predictive signal for a specific gust 24 h ahead.
+
+\textbf{Residual autocorrelation} in dew\_point and pressure suggests the 120 h
+lookback may be insufficient for variables with long memory. Increasing the
+lookback (e.g.\ to 168 h) or adding explicit lag features could capture more of
+this structure.
+
+\subsubsection{S vs.\ I Trade-off in Practice}
+
+DLinear-I's $+2.7\%$ MAE improvement comes at $10.9\times$ the parameters.
+Whether this is worthwhile depends on context:
+
+\begin{itemize}
+  \item \textbf{For model comparison:} DLinear-I should be the reported variant
+        --- it represents the best achievable with the DLinear architecture and
+        follows the principle of giving each model its fair configuration.
+  \item \textbf{For deployment:} DLinear-S is the pragmatic choice --- 85 s
+        training, 5,892 parameters, and only marginally worse accuracy. The
+        $2.7\%$ gap is within the bootstrap CI width ($\sim 3.5\%$).
+  \item \textbf{For interpretability:} DLinear-S is strongly preferred --- its
+        single pair of $\mathbf{W}_t, \mathbf{W}_s$ matrices ($24 \times 120$
+        each) can be visualized as heatmaps showing what past hours influence
+        each future hour, for trend vs.\ seasonal branches separately.
+\end{itemize}
