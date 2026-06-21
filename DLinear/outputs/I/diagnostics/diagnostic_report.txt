@@ -2,15 +2,15 @@
   DIAGNOSTIC REPORT -- DLinear-I
 ========================================================================
   Train: 2021-2023  |  Val: 2024  |  Test: 2025
-  Params: 63,972  |  Best epoch: 46  |  Val loss: 0.345984
+  Params: 63,972  |  Best epoch: 46  |  Val loss: 0.345920
   Input: 11 features x 120h  ->  Target: 7 vars x 24h
   Rolling origins: 360  |  Horizon step: 24h (non-overlapping)
 
 ------------------------------------------------------------------------
   1. OVERALL METRICS (real scale, 2025 test)
 ------------------------------------------------------------------------
-  MAE  = 5.6563
-  RMSE = 12.1864
+  MAE  = 5.6457
+  RMSE = 12.1726
   RMSE/MAE ratio = 2.2
   -> Ratio > 2: model has occasional large errors (cloud/wind outliers)
 
@@ -37,13 +37,13 @@
 ------------------------------------------------------------------------
   Variable                            MAE     RMSE     MAPE   Rank
   ----------------------------------------------------------------
-  surface_pressure (hPa)           1.1433   1.6457     0.1%      1
-  dew_point_2m (°C)                1.1808   1.7676    11.5%      2
-  temperature_2m (°C)              1.1984   1.6465     5.5%      3
-  wy                               3.0685   4.3001 15735823.7%      4
-  wx                               4.4216   5.9607 302763327.6%      5
-  relative_humidity_2m (%)         5.6547   7.7169     8.1%      6
-  cloud_cover (%)                 22.9268  30.2893 87702195.8%      7
+  surface_pressure (hPa)           1.1296   1.6337     0.1%      1
+  dew_point_2m (°C)                1.1690   1.7560    11.4%      2
+  temperature_2m (°C)              1.1941   1.6468     5.5%      3
+  wy                               3.0667   4.2995 15688687.8%      4
+  wx                               4.4233   5.9655 301782103.2%      5
+  relative_humidity_2m (%)         5.6568   7.7128     8.1%      6
+  cloud_cover (%)                 22.8802  30.2519 87602208.7%      7
 
   Best:  surface_pressure (hPa)
   Worst: cloud_cover (%)
@@ -53,13 +53,13 @@
 ------------------------------------------------------------------------
   Horizon         MAE     RMSE  Error growth   MAE (temp)
   ----------------------------------------------------------------
-  t+1          2.6980   6.9021        1.0x        0.6509
-  t+4          4.2643  10.5099        1.6x        0.8669
-  t+8          4.9434  11.2105        1.8x        0.9958
-  t+12         5.6774  11.7934        2.1x        1.4214
-  t+16         6.7282  13.3828        2.5x        1.8052
-  t+20         6.8299  13.8576        2.5x        1.1465
-  t+24         6.9847  14.0005        2.6x        1.1428
+  t+1          2.6619   6.8258        1.0x        0.6171
+  t+4          4.2562  10.5001        1.6x        0.8470
+  t+8          4.9273  11.1855        1.9x        0.9775
+  t+12         5.6676  11.7708        2.1x        1.4305
+  t+16         6.7298  13.3854        2.5x        1.8159
+  t+20         6.8142  13.8374        2.6x        1.1403
+  t+24         6.9857  14.0047        2.6x        1.1418
 
   Analysis: Error grows roughly linearly with horizon. Temperature stays
   accurate even at t+24, while cloud/wind dominate the overall MAE.
@@ -72,13 +72,13 @@
 
   Variable                         Passed  Worst h   Q-stat  p-value      Status
   ----------------------------------------------------------------------------
-  temperature_2m (°C)               13/24       3     140.3    0.0000        WARN
-  relative_humidity_2m (%)          14/24       1      50.8    0.0011        WARN
-  dew_point_2m (°C)                  0/24       2     374.2    0.0000        FAIL
-  surface_pressure (hPa)             9/24      11     222.9    0.0000        FAIL
-  cloud_cover (%)                   20/24      18      55.5    0.0003        WARN
-  wx                                14/24      11      52.4    0.0007        WARN
-  wy                                13/24      15      59.7    0.0001        WARN
+  temperature_2m (°C)               14/24       3     132.7    0.0000        WARN
+  relative_humidity_2m (%)          14/24      19      52.3    0.0007        WARN
+  dew_point_2m (°C)                  0/24       2     440.4    0.0000        FAIL
+  surface_pressure (hPa)             9/24      11     243.6    0.0000        FAIL
+  cloud_cover (%)                   20/24      18      55.4    0.0003        WARN
+  wx                                14/24      11      54.0    0.0004        WARN
+  wy                                12/24      15      60.4    0.0001        WARN
   TOTAL                             83/168 (49%)
 
   Variables needing attention: temperature_2m (°C), relative_humidity_2m (%), dew_point_2m (°C), surface_pressure (hPa), cloud_cover (%), wx, wy
@@ -90,13 +90,13 @@
 ------------------------------------------------------------------------
   Variable                        Statistic    p-value   Verdict    Skewness
   ------------------------------------------------------------------------
-  temperature_2m (°C)                1233.2     0.0000      FAIL       -1.20
-  relative_humidity_2m (%)            281.2     0.0000      FAIL       -0.28
-  dew_point_2m (°C)                  1893.2     0.0000      FAIL       -1.66
-  surface_pressure (hPa)             1099.1     0.0000      FAIL        0.98
-  cloud_cover (%)                     279.9     0.0000      FAIL       -0.60
-  wx                                  439.1     0.0000      FAIL        0.56
-  wy                                  545.7     0.0000      FAIL        0.20
+  temperature_2m (°C)                1257.0     0.0000      FAIL       -1.21
+  relative_humidity_2m (%)            272.5     0.0000      FAIL       -0.27
+  dew_point_2m (°C)                  1910.4     0.0000      FAIL       -1.68
+  surface_pressure (hPa)             1147.6     0.0000      FAIL        1.01
+  cloud_cover (%)                     287.2     0.0000      FAIL       -0.61
+  wx                                  438.6     0.0000      FAIL        0.56
+  wy                                  539.7     0.0000      FAIL        0.19
 
   All FAIL -- expected for weather data. Causes:
   - Cloud cover: bimodal (0% vs 100%), residuals are U-shaped
@@ -109,13 +109,13 @@
 ------------------------------------------------------------------------
   Variable                          h=1 (+/-)   h=12 (+/-)   h=24 (+/-)     Widen
   ------------------------------------------------------------------------------
-  temperature_2m (°C)                  1.6633       3.7754       2.9161      x1.8
-  relative_humidity_2m (%)             5.5917      15.4545      17.5895      x3.1
-  dew_point_2m (°C)                    1.6321       3.3706       5.0904      x3.1
-  surface_pressure (hPa)               1.0591       3.0098       5.0198      x4.7
-  cloud_cover (%)                     39.6007      61.6306      66.6603      x1.7
-  wx                                   5.2205      13.3813      13.4615      x2.6
-  wy                                   4.6480       8.6207       7.8444      x1.7
+  temperature_2m (°C)                  1.6481       3.8509       2.8973      x1.8
+  relative_humidity_2m (%)             5.6071      14.9147      17.7839      x3.2
+  dew_point_2m (°C)                    1.5651       3.3178       5.0721      x3.2
+  surface_pressure (hPa)               1.0005       3.0702       5.0156      x5.0
+  cloud_cover (%)                     39.6685      61.7937      66.2935      x1.7
+  wx                                   5.2070      13.3614      13.4152      x2.6
+  wy                                   4.6728       8.7334       7.7010      x1.6
 
   Interpretation: the interval half-width is the margin of uncertainty.
   Larger widening = model loses confidence faster for that variable.
@@ -126,28 +126,28 @@
   Resample forecast origins with replacement -> distribution of MAE/RMSE.
   Variable                            MAE                  95% CI      RMSE                  95% CI
   ------------------------------------------------------------------------------------------------
-  temperature_2m (°C)              1.1984  [  1.1264,   1.2779]    1.6465  [  1.4975,   1.8253]
-  relative_humidity_2m (%)         5.6547  [  5.3709,   5.9676]    7.7169  [  7.2789,   8.1798]
-  dew_point_2m (°C)                1.1808  [  1.0779,   1.2886]    1.7676  [  1.5519,   1.9840]
-  surface_pressure (hPa)           1.1433  [  1.0547,   1.2355]    1.6457  [  1.5094,   1.7974]
-  cloud_cover (%)                 22.9268  [ 21.5527,  24.2129]   30.2893  [ 28.8005,  31.6608]
-  wx                               4.4216  [  4.1598,   4.6781]    5.9607  [  5.5365,   6.3791]
-  wy                               3.0685  [  2.8860,   3.2564]    4.3001  [  3.8970,   4.7517]
-  OVERALL                          5.6563  [  5.4494,   5.8588]   12.1864  [ 11.6560,  12.7069]
+  temperature_2m (°C)              1.1941  [  1.1220,   1.2727]    1.6468  [  1.4950,   1.8275]
+  relative_humidity_2m (%)         5.6568  [  5.3807,   5.9647]    7.7128  [  7.2784,   8.1736]
+  dew_point_2m (°C)                1.1690  [  1.0683,   1.2768]    1.7560  [  1.5394,   1.9716]
+  surface_pressure (hPa)           1.1296  [  1.0436,   1.2204]    1.6337  [  1.5000,   1.7830]
+  cloud_cover (%)                 22.8802  [ 21.5164,  24.1583]   30.2519  [ 28.7766,  31.6229]
+  wx                               4.4233  [  4.1594,   4.6808]    5.9655  [  5.5406,   6.3800]
+  wy                               3.0667  [  2.8850,   3.2565]    4.2995  [  3.8983,   4.7483]
+  OVERALL                          5.6457  [  5.4388,   5.8498]   12.1726  [ 11.6433,  12.6895]
 
-  CI width: MAE = +/-0.2047 (3.6%)
-            RMSE = +/-0.5255 (4.3%)
+  CI width: MAE = +/-0.2055 (3.6%)
+            RMSE = +/-0.5231 (4.3%)
   Narrow CI (< 5%) = high confidence in reported metrics.
 
 ------------------------------------------------------------------------
   9. STABILITY CHECK
 ------------------------------------------------------------------------
-  Val loss (last 10 epochs) slope: -0.000067
+  Val loss (last 10 epochs) slope: -0.000039
   -> Val loss flat -- model converged at optimal point
-  Train loss (epoch 1):  0.479809
-  Train loss (final):    0.310064
-  Val loss (best):       0.345984 at epoch 46
-  Train-val gap:         -0.035920
+  Train loss (epoch 1):  0.474890
+  Train loss (final):    0.310005
+  Val loss (best):       0.345920 at epoch 46
+  Train-val gap:         -0.035915
 
 ------------------------------------------------------------------------
   10. FINAL VERDICT & RECOMMENDATIONS

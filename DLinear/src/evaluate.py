@@ -338,6 +338,15 @@ def evaluate():
     ax2.legend()
 
     plt.tight_layout()
+    per_horizon_path = os.path.join(config.OUTPUT_DIR, 'per_horizon_error.png')
+    plt.savefig(per_horizon_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Per-horizon plot -> {per_horizon_path}")
+
+    # -- Auto-run diagnostics for both models --
+    from diagnostics import run_diagnostics
+    for mt in ("DLinear-S", "DLinear-I"):
+        run_diagnostics(mt)
 
     return Yp_real, Yt_real, per_var, target_names, scaler
 

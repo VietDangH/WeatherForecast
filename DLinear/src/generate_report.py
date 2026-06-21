@@ -23,10 +23,13 @@ for i, name in enumerate(target_names):
                           "stationary": result[1] < 0.05}
 all_stationary = all(r["stationary"] for r in adf_results.values())
 
-for mt, ckpt_dir in [("DLinear-S", config.CHECKPOINT_DIR), ("DLinear-I", config.CHECKPOINT_DIR_I)]:
+def generate_diagnostic_report(model_type):
+    """Generate and save diagnostic_report.txt for a single model type."""
+    ckpt_dir = config.CHECKPOINT_DIR_I if model_type == "DLinear-I" else config.CHECKPOINT_DIR
+
     cp = torch.load(os.path.join(ckpt_dir, "best_model.pth"), map_location="cpu", weights_only=False)
     model = DLinear(config.LOOKBACK, config.FORECAST, n_in, out_features=n_out,
-                    kernel_size=config.KERNEL_SIZE, individual=config.is_individual(mt)).to(config.DEVICE)
+                    kernel_size=config.KERNEL_SIZE, individual=config.is_individual(model_type)).to(config.DEVICE)
     model.load_state_dict(cp["model_state_dict"])
     model.eval()
 
@@ -46,7 +49,7 @@ for mt, ckpt_dir in [("DLinear-S", config.CHECKPOINT_DIR), ("DLinear-I", config.
 
     L = []
     L.append("=" * 72)
-    L.append(f"  DIAGNOSTIC REPORT -- {mt}")
+    L.append(f"  DIAGNOSTIC REPORT -- {model_type}")
     L.append("=" * 72)
     L.append(f"  Train: 2021-2023  |  Val: 2024  |  Test: 2025")
     L.append(f"  Params: {model.count_params():,}  |  Best epoch: {cp['epoch']}  |  Val loss: {cp['val_loss']:.6f}")
@@ -283,8 +286,13 @@ for mt, ckpt_dir in [("DLinear-S", config.CHECKPOINT_DIR), ("DLinear-I", config.
     L.append("")
     L.append("=" * 72)
 
-    out_dir = os.path.join(config.get_output_dir(mt), "diagnostics")
+    out_dir = os.path.join(config.get_output_dir(model_type), "diagnostics")
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "diagnostic_report.txt"), "w", encoding="utf-8") as f:
         f.write("\n".join(L))
-    print(f"[OK] {mt}")
+    print(f"[OK] {model_type}")
+
+
+if __name__ == "__main__":
+    for mt in ["DLinear-S", "DLinear-I"]:
+        generate_diagnostic_report(mt)

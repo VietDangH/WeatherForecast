@@ -364,6 +364,28 @@ def diagnostic_verdict(lb_results, all_stationary, is_stable):
         print("All diagnostics PASS. Model is well-specified and ready for final evaluation.")
 
 
+def _discover_checkpoints(model_type):
+    """Find all checkpoints for a model type. Returns list of (seed_label, path)."""
+    import glob as _glob
+    ckpt_dir = config.get_checkpoint_dir(model_type)
+    checkpoints = []
+
+    # Multi-seed checkpoints
+    multi = sorted(_glob.glob(os.path.join(ckpt_dir, 'best_model_seed*.pth')))
+    for cp in multi:
+        base = os.path.basename(cp)
+        seed_str = base.replace('best_model_seed', '').replace('.pth', '')
+        checkpoints.append((f'seed_{seed_str}', cp))
+
+    # Fallback to single checkpoint
+    if not checkpoints:
+        single = os.path.join(ckpt_dir, 'best_model.pth')
+        if os.path.exists(single):
+            checkpoints.append(('single', single))
+
+    return checkpoints
+
+
 def run_diagnostics(model_type="DLinear-S"):
     checkpoint_dir = config.get_checkpoint_dir(model_type)
 
@@ -374,30 +396,61 @@ def run_diagnostics(model_type="DLinear-S"):
     diag_dir = os.path.join(config.get_output_dir(model_type), 'diagnostics')
     os.makedirs(diag_dir, exist_ok=True)
 
-    cp = os.path.join(checkpoint_dir, 'best_model.pth')
-    if not os.path.exists(cp):
+    # ---- Discover checkpoints (multi-seed) ----
+    checkpoints = _discover_checkpoints(model_type)
+    if not checkpoints:
         print("No checkpoint! Run train.py first."); return
 
-    checkpoint = torch.load(cp, map_location=config.DEVICE, weights_only=False)
-    feature_names = checkpoint['feature_names']
-    target_names = checkpoint.get('target_names', feature_names)
-    history = checkpoint.get('history', {})
+    print(f"\nFound {len(checkpoints)} checkpoint(s): {[c[0] for c in checkpoints]}")
+
+    # Load first checkpoint for metadata
+    cp0 = torch.load(checkpoints[0][1], map_location=config.DEVICE, weights_only=False)
+    feature_names = cp0['feature_names']
+    target_names = cp0.get('target_names', feature_names)
+    history = cp0.get('history', {})
     n_in = len(feature_names)
     n_out = len(target_names)
 
     _, val_loader, test_loader, scaler, _, _ = load_processed_data()
 
-    model = DLinear(config.LOOKBACK, config.FORECAST, n_in, out_features=n_out,
-                    kernel_size=config.KERNEL_SIZE,
-                    individual=config.is_individual(model_type)).to(config.DEVICE)
-    model.load_state_dict(checkpoint['model_state_dict'])
-
     # ---- 1. ADF stationarity (pre-fit, on full train) ----
     all_stationary = adf_stationarity_test(scaler, n_in, target_names)
 
-    # ---- Compute residuals (shared by methods 2-5) ----
-    print("\nComputing residuals on test set...")
-    residuals = compute_residuals(model, test_loader, scaler, n_in, n_out)
+    # ---- Compute predictions from ALL seeds (ensemble average) ----
+    print(f"\nComputing ensemble predictions ({len(checkpoints)} seed(s))...")
+    all_preds = []
+    for label, cp_path in checkpoints:
+        model = DLinear(config.LOOKBACK, config.FORECAST, n_in, out_features=n_out,
+                        kernel_size=config.KERNEL_SIZE,
+                        individual=config.is_individual(model_type)).to(config.DEVICE)
+        ckpt = torch.load(cp_path, map_location=config.DEVICE, weights_only=False)
+        model.load_state_dict(ckpt['model_state_dict'])
+        model.eval()
+
+        preds = []
+        with torch.no_grad():
+            for X, Y in test_loader:
+                X = X.to(config.DEVICE)
+                preds.append(model(X).cpu().numpy())
+        all_preds.append(np.concatenate(preds, axis=0))
+        print(f"  {label}: done")
+
+    # Average predictions across seeds
+    preds_ensemble = np.mean(all_preds, axis=0)  # (N_windows, 24, 7)
+
+    # ---- Compute residuals from ensemble predictions ----
+    print("\nComputing residuals from ensemble predictions...")
+    t_mean = scaler.mean_[n_in:]
+    t_scale = scaler.scale_[n_in:]
+    residuals = []
+    with torch.no_grad():
+        for X, Y in test_loader:
+            Yt = Y.cpu().numpy()
+            residuals.append(Yt)
+    all_actuals = np.concatenate(residuals, axis=0)
+    # Residuals on scaled scale, then subsample + denormalize
+    res_scaled = (all_actuals - preds_ensemble)[::24]  # step=24 for non-overlapping origins
+    residuals = res_scaled * t_scale  # denormalize: mean cancels out
 
     # ---- 2. Ljung-Box (lag 24) ----
     lb_results = ljung_box_test(residuals, target_names, lag=24)
@@ -420,8 +473,15 @@ def run_diagnostics(model_type="DLinear-S"):
     # ---- Verdict ----
     diagnostic_verdict(lb_results, all_stationary, is_stable)
 
+    # ---- Generate diagnostic report file ----
+    from generate_report import generate_diagnostic_report
+    generate_diagnostic_report(model_type)
+
 
 if __name__ == "__main__":
     import sys
-    mt = sys.argv[1] if len(sys.argv) > 1 else "DLinear-S"
-    run_diagnostics(mt)
+    if len(sys.argv) > 1:
+        run_diagnostics(sys.argv[1])
+    else:
+        for mt in ["DLinear-S", "DLinear-I"]:
+            run_diagnostics(mt)

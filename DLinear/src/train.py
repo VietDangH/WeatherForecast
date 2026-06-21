@@ -222,7 +222,16 @@ def _multi_seed_train(model_type, seeds=None):
             if patience_counter >= config.PATIENCE:
                 break
 
-        results.append({'seed': seed, 'best_val_loss': best_val_loss, 'best_epoch': best_epoch})
+        results.append({'seed': seed, 'best_val_loss': best_val_loss, 'best_epoch': best_epoch,
+                         'history': history})
+
+    # -- Save loss curve + training history (last seed) --
+    output_dir = config.get_output_dir(model_type)
+    os.makedirs(output_dir, exist_ok=True)
+    plot_suffix = "_I" if model_type == "DLinear-I" else ""
+    plot_training_history(history, os.path.join(output_dir, f'loss_curve{plot_suffix}.png'))
+    with open(os.path.join(output_dir, f'training_history{plot_suffix}.json'), 'w') as f:
+        json.dump(history, f, indent=2)
 
     # -- Report mean ± std --
     losses = [r['best_val_loss'] for r in results]
@@ -257,4 +266,6 @@ def multi_seed_train():
 
 
 if __name__ == "__main__":
-    train()
+    # Train both variants with 3 seeds each (Protocol §8)
+    multi_seed_train()      # DLinear-S: seeds 42, 123, 456
+    multi_seed_train_i()    # DLinear-I: seeds 42, 123, 456

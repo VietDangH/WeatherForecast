@@ -43,26 +43,31 @@ class MovingAvg(nn.Module):
       - k cang LON  -> trend cang MUOT, chi giu xu huong chuan
       - k cang NHO  -> trend gan voi original, seasonal yeu
 
-    Padding = k//2 de giu nguyen chieu dai chuoi (same length output).
-    Tai 2 dau chuoi, cac diem thieu duoc pad bang 0.
+    Padding = replication (giong paper cure-lab/LTSF-Linear):
+      Tai 2 dau chuoi, gia tri thieu duoc lap tu diem bien
+      (X[0] lap p lan, X[-1] lap p lan) thay vi pad zero.
 
     Vi du k=25:
-      Trend[12] = trung binh cua X[0], X[1], ..., X[24]  (25 gia tri)
+      Trend[0]  = (X[0]×13 + X[1] + ... + X[12]) / 25
+      Trend[12] = (X[0] + X[1] + ... + X[24]) / 25
     """
 
     def __init__(self, kernel_size):
         super().__init__()
-        # AvgPool1d tu chia cho kernel_size (tinh trung binh)
-        # stride=1 giu nguyen do dai
-        # padding=kernel_size//2 de output cung length voi input
-        self.avg = nn.AvgPool1d(kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        self.kernel_size = kernel_size
+        # padding=0 vi da tu pad bang tay trong forward()
+        self.avg = nn.AvgPool1d(kernel_size=kernel_size, stride=1, padding=0)
 
     def forward(self, x):
         """
         Input:  x (B, C, L)  - batch, channels, sequence length
         Output: trend (B, C, L) - cung shape, da lam min
         """
-        return self.avg(x)
+        p = (self.kernel_size - 1) // 2
+        front = x[:, :, 0:1].repeat(1, 1, p)    # lap X[0] p lan
+        end = x[:, :, -1:].repeat(1, 1, p)       # lap X[-1] p lan
+        x_padded = torch.cat([front, x, end], dim=2)
+        return self.avg(x_padded)
 
 
 # ================================================================
