@@ -254,25 +254,49 @@ def evaluate():
     N, H, C_out = Yp_real.shape
     print(f"\nRolling-origin: {N} origins x {H}h forecasts (step=24h)")
 
-    # -- Per-model save (S and I separately) --
+    # -- Per-model save (S and I separately, ensemble mean across seeds) --
     for mt in ("DLinear-S", "DLinear-I"):
         mt_list = [(l, r) for m, l, r in results if m == mt]
         if not mt_list:
             continue
-        _, r_mt = mt_list[0]
         od = config.get_output_dir(mt)
         os.makedirs(od, exist_ok=True)
-        pd.DataFrame(r_mt['per_var']).T.to_csv(os.path.join(od, 'test_metrics.csv'))
+
+        # Ensemble mean overall
+        maes = [r['overall']['MAE'] for _, r in mt_list]
+        rmses = [r['overall']['RMSE'] for _, r in mt_list]
+        ens_overall = {'MAE': float(np.mean(maes)), 'RMSE': float(np.mean(rmses)),
+                       'MAE_std': float(np.std(maes)), 'RMSE_std': float(np.std(rmses))}
+
+        # Ensemble mean per-variable (average across seeds)
+        var_names = list(mt_list[0][1]['per_var'].keys())
+        ens_per_var = {}
+        for v in var_names:
+            v_maes = [r['per_var'][v]['MAE'] for _, r in mt_list]
+            v_rmses = [r['per_var'][v]['RMSE'] for _, r in mt_list]
+            ens_per_var[v] = {'MAE': float(np.mean(v_maes)), 'RMSE': float(np.mean(v_rmses)),
+                              'MAE_std': float(np.std(v_maes)), 'RMSE_std': float(np.std(v_rmses))}
+
+        # Ensemble mean per-horizon (average across seeds)
+        ens_per_horizon = {}
+        for h in mt_list[0][1]['per_horizon']:
+            h_maes = [r['per_horizon'][h]['MAE'] for _, r in mt_list]
+            h_rmses = [r['per_horizon'][h]['RMSE'] for _, r in mt_list]
+            ens_per_horizon[h] = {'MAE': float(np.mean(h_maes)), 'RMSE': float(np.mean(h_rmses))}
+
+        pd.DataFrame(ens_per_var).T.to_csv(os.path.join(od, 'test_metrics.csv'))
         with open(os.path.join(od, 'evaluation_results.json'), 'w') as f:
-            json.dump({'model_type': mt, 'overall': r_mt['overall'],
-                       'per_var': r_mt['per_var'], 'per_horizon': r_mt['per_horizon']}, f, indent=2)
-        # Predicted-vs-actual plots
+            json.dump({'model_type': mt, 'overall': ens_overall,
+                       'per_var': ens_per_var, 'per_horizon': ens_per_horizon}, f, indent=2)
+
+        # Predicted-vs-actual plots (use first seed's predictions)
+        _, r0 = mt_list[0]
         pa_dir = os.path.join(od, 'pred_vs_actual')
         os.makedirs(pa_dir, exist_ok=True)
         for i, name in enumerate(target_names):
             fn = name.replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_')
             plot_path = os.path.join(pa_dir, f'pred_vs_actual_{fn}.png')
-            plot_prediction_vs_actual(r_mt['Yt_real'], r_mt['Yp_real'], i, name, target_names, save_path=plot_path)
+            plot_prediction_vs_actual(r0['Yt_real'], r0['Yp_real'], i, name, target_names, save_path=plot_path)
         print(f"[{mt}] Results + plots saved to {od}/")
 
     # ========================================================
