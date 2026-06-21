@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Iterable
 
 import numpy as np
 import pandas as pd
@@ -68,28 +68,50 @@ def run_post_fit_diagnostics(models: dict[str, Any], lb_lag: int = 24) -> pd.Dat
 def format_diagnostics(
     adf_diagnostics: pd.DataFrame,
     model_diagnostics: pd.DataFrame,
-    order: tuple[int, int, int],
-    seasonal_order: tuple[int, int, int, int],
+    order_candidates: Iterable[tuple[int, int, int]],
+    seasonal_order_candidates: Iterable[tuple[int, int, int, int]],
     trend: str,
     fit_scope: str,
+    best_models: pd.DataFrame | None = None,
 ) -> str:
+    orders_text = "; ".join(str(order) for order in order_candidates)
+    seasonal_orders_text = "; ".join(
+        str(seasonal_order) for seasonal_order in seasonal_order_candidates
+    )
     lines = [
         "SARIMA diagnostics",
         "==================",
         "",
-        f"Model: SARIMA(order={order}, seasonal_order={seasonal_order}, trend={trend!r})",
+        "Model: independent univariate SARIMA per target",
+        f"Candidate orders: {orders_text}",
+        f"Candidate seasonal orders: {seasonal_orders_text}",
+        f"Trend: {trend!r}",
         f"Fit scope: {fit_scope}",
         "Targets are modeled independently and combined into a 24 x 7 forecast.",
         "",
-        "ADF stationarity on train only",
-        "-----------------------------",
-        "For ADF, p < 0.05 rejects the unit-root null and is treated as stationary.",
-        adf_diagnostics.to_string(index=False),
-        "",
-        "Post-fit diagnostics",
-        "--------------------",
-        "For Ljung-Box and Jarque-Bera, p > 0.05 is treated as good.",
-        model_diagnostics.to_string(index=False),
-        "",
     ]
+    if best_models is not None and not best_models.empty:
+        lines.extend(
+            [
+                "Selected models",
+                "---------------",
+                "Best model per target is selected by validation MAE.",
+                best_models.to_string(index=False),
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "ADF stationarity on train only",
+            "-----------------------------",
+            "For ADF, p < 0.05 rejects the unit-root null and is treated as stationary.",
+            adf_diagnostics.to_string(index=False),
+            "",
+            "Post-fit diagnostics",
+            "--------------------",
+            "For Ljung-Box and Jarque-Bera, p > 0.05 is treated as good.",
+            model_diagnostics.to_string(index=False),
+            "",
+        ]
+    )
     return "\n".join(lines)

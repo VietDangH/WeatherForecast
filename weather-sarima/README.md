@@ -38,13 +38,13 @@ pip install -r weather-sarima/requirements.txt
 Use this first to validate the dataset and splits without fitting SARIMA models:
 
 ```powershell
-python weather-sarima/run.py --dry-run
+python weather-sarima/train.py --dry-run
 ```
 
-## Full run
+## Train
 
 ```powershell
-python weather-sarima/run.py
+python weather-sarima/train.py
 ```
 
 The default model is:
@@ -53,16 +53,33 @@ The default model is:
 SARIMA(order=(1, 0, 1), seasonal_order=(1, 0, 1, 24), trend="c")
 ```
 
-This uses daily seasonality for hourly data. You can override it:
+This uses daily seasonality for hourly data. The pipeline selects the best model
+per target variable by validation MAE, then saves the selected fitted models.
+You can override or expand the candidate grid:
 
 ```powershell
-python weather-sarima/run.py --order 2,0,2 --seasonal-order 1,0,1,24
+python weather-sarima/train.py --order 2,0,2 --seasonal-order 1,0,1,24
+python weather-sarima/train.py --order "1,0,1;2,0,1" --seasonal-order "1,0,1,24;0,0,1,24"
 ```
 
-For a quick development run after installing dependencies:
+## Predict
+
+After training, run prediction from the saved models without fitting again:
 
 ```powershell
-python weather-sarima/run.py --max-origins 5 --bootstrap 100 --no-plots
+python weather-sarima/predict.py
+```
+
+For a quick prediction smoke test after models have been saved:
+
+```powershell
+python weather-sarima/predict.py --max-origins 5 --bootstrap 100 --no-plots
+```
+
+The old end-to-end command still trains and predicts in one run:
+
+```powershell
+python weather-sarima/run.py
 ```
 
 ## Outputs
@@ -75,6 +92,10 @@ Results are written to `weather-sarima/results/`:
 - `per_variable_metrics.csv`
 - `forecasts.csv`: long-form predictions and actuals
 - `diagnostics.txt`: ADF, Ljung-Box, Jarque-Bera, AIC/BIC, convergence
+- `models/*.pkl`: selected fitted SARIMA model for each target variable
+- `models/best_models.csv`: selected order, validation score, and model path
+- `models/model_selection.csv`: scores for every candidate tried
+- `models/training_metadata.json`: fit scope and model selection settings
 - `plots/`: error curves and predicted-vs-actual samples
 
 ## Notes

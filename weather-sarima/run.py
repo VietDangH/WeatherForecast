@@ -36,7 +36,11 @@ from src.evaluate import (  # noqa: E402
     save_metrics,
 )
 from src.plots import write_plots  # noqa: E402
-from src.sarima_model import fit_sarima_models, parse_order  # noqa: E402
+from src.sarima_model import (  # noqa: E402
+    fit_best_sarima_models,
+    parse_order_grid,
+    save_model_artifacts,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,12 +62,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--order",
         default=",".join(map(str, DEFAULT_ORDER)),
-        help="Non-seasonal ARIMA order as p,d,q.",
+        help=(
+            "Non-seasonal ARIMA order candidates as p,d,q. "
+            "Use semicolons for a grid, e.g. '1,0,1;2,0,1'."
+        ),
     )
     parser.add_argument(
         "--seasonal-order",
         default=",".join(map(str, DEFAULT_SEASONAL_ORDER)),
-        help="Seasonal ARIMA order as P,D,Q,s.",
+        help=(
+            "Seasonal ARIMA order candidates as P,D,Q,s. "
+            "Use semicolons for a grid, e.g. '1,0,1,24;0,0,1,24'."
+        ),
     )
     parser.add_argument(
         "--trend",
@@ -102,6 +112,18 @@ def parse_args() -> argparse.Namespace:
         help="Bootstrap samples for overall MAE/RMSE CIs. Use 0 to disable.",
     )
     parser.add_argument(
+        "--selection-horizon",
+        type=int,
+        default=None,
+        help="Validation horizon for selecting the best model. Defaults to --horizon.",
+    )
+    parser.add_argument(
+        "--selection-step",
+        type=int,
+        default=None,
+        help="Validation rolling step for selecting the best model. Defaults to --step.",
+    )
+    parser.add_argument(
         "--seed",
         type=int,
         default=42,
@@ -127,10 +149,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    order = parse_order(args.order, expected_len=3, label="order")
-    seasonal_order = parse_order(
+    order_candidates = parse_order_grid(args.order, expected_len=3, label="order")
+    seasonal_order_candidates = parse_order_grid(
         args.seasonal_order, expected_len=4, label="seasonal-order"
     )
+    selection_horizon = args.selection_horizon or args.horizon
+    selection_step = args.selection_step or args.step
 
     data = load_weather_data(args.data)
     splits = split_by_protocol(data)
@@ -165,30 +189,60 @@ def main() -> int:
     fit_scope = "2021-2024" if args.fit_through_val else "2021-2023"
 
     print(
-        "Fitting seven univariate SARIMA models:",
-        f"order={order}",
-        f"seasonal_order={seasonal_order}",
+        "Selecting and fitting seven univariate SARIMA models:",
+        f"order_candidates={order_candidates}",
+        f"seasonal_order_candidates={seasonal_order_candidates}",
         f"trend={args.trend}",
         f"fit_scope={fit_scope}",
+        f"selection_horizon={selection_horizon}",
+        f"selection_step={selection_step}",
     )
 
     adf_diagnostics = run_pre_fit_diagnostics(train_targets)
-    models = fit_sarima_models(
-        fit_targets,
-        order=order,
-        seasonal_order=seasonal_order,
+    models, best_models, model_selection = fit_best_sarima_models(
+        train_targets=train_targets,
+        validation_targets=val_targets,
+        final_fit_targets=fit_targets,
+        order_candidates=order_candidates,
+        seasonal_order_candidates=seasonal_order_candidates,
         trend=args.trend,
         maxiter=args.maxiter,
+        selection_horizon=selection_horizon,
+        selection_step=selection_step,
     )
     model_diagnostics = run_post_fit_diagnostics(models)
+    metadata = {
+        "data_path": str(args.data),
+        "target_columns": TARGET_COLUMNS,
+        "fit_through_val": bool(args.fit_through_val),
+        "fit_scope": fit_scope,
+        "train_rows": len(train_targets),
+        "validation_rows": len(val_targets),
+        "final_fit_rows": len(fit_targets),
+        "order_candidates": [list(order) for order in order_candidates],
+        "seasonal_order_candidates": [
+            list(seasonal_order) for seasonal_order in seasonal_order_candidates
+        ],
+        "trend": args.trend,
+        "selection_horizon": selection_horizon,
+        "selection_step": selection_step,
+    }
+    save_model_artifacts(
+        models=models,
+        best_models=best_models,
+        selection_results=model_selection,
+        results_dir=args.results,
+        metadata=metadata,
+    )
 
     diagnostics_text = format_diagnostics(
         adf_diagnostics=adf_diagnostics,
         model_diagnostics=model_diagnostics,
-        order=order,
-        seasonal_order=seasonal_order,
+        order_candidates=order_candidates,
+        seasonal_order_candidates=seasonal_order_candidates,
         trend=args.trend,
         fit_scope=fit_scope,
+        best_models=best_models,
     )
     (args.results / "diagnostics.txt").write_text(diagnostics_text, encoding="utf-8")
 
