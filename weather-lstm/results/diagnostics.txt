@@ -1,0 +1,38 @@
+LSTM Ensemble Comprehensive Diagnostics (Adaptive LR)
+============================================================
+
+1. LJUNG-BOX TEST
+------------------------------------------------------------
+    temp: p-value = 0.0010 -> FAIL (Autocorrelated)
+      rh: p-value = 0.0097 -> FAIL (Autocorrelated)
+     dew: p-value = 0.0001 -> FAIL (Autocorrelated)
+pressure: p-value = 0.0000 -> FAIL (Autocorrelated)
+   cloud: p-value = 0.4029 -> PASS (White Noise)
+      wx: p-value = 0.4882 -> PASS (White Noise)
+      wy: p-value = 0.0884 -> PASS (White Noise)
+
+2. AUGMENTED DICKEY-FULLER TEST
+------------------------------------------------------------
+* H0: Phần dư có nghiệm đơn vị (Không dừng). H1: Phần dư Dừng (Stationary).
+* Mong muốn: p-value < 0.05 (Dừng) -> Mô hình ổn định theo thời gian.
+
+    temp: p-value = 0.0000 -> PASS (Stationary)
+      rh: p-value = 0.0000 -> PASS (Stationary)
+     dew: p-value = 0.0000 -> PASS (Stationary)
+pressure: p-value = 0.0000 -> PASS (Stationary)
+   cloud: p-value = 0.0000 -> PASS (Stationary)
+      wx: p-value = 0.0000 -> PASS (Stationary)
+      wy: p-value = 0.0000 -> PASS (Stationary)
+
+3. RESIDUAL STABILITY CHECK
+------------------------------------------------------------
+* So sánh Mean và Variance của nửa đầu (H1) và nửa sau (H2) tập Test.
+* Mong muốn: Mean xấp xỉ 0, Variance ít biến động.
+
+    temp: Overall Mean = 0.0545 | Mean(H1, H2) = (0.0140, 0.0950) | Var(H1, H2) = (0.3799, 0.3502)
+      rh: Overall Mean = 0.7352 | Mean(H1, H2) = (1.4604, 0.0100) | Var(H1, H2) = (18.4511, 9.1789)
+     dew: Overall Mean = 0.1590 | Mean(H1, H2) = (0.2603, 0.0578) | Var(H1, H2) = (0.6107, 0.3631)
+pressure: Overall Mean = -0.2523 | Mean(H1, H2) = (-0.1588, -0.3457) | Var(H1, H2) = (0.4776, 0.6372)
+   cloud: Overall Mean = -1.4729 | Mean(H1, H2) = (-0.3531, -2.5928) | Var(H1, H2) = (340.5778, 325.7858)
+      wx: Overall Mean = -0.1061 | Mean(H1, H2) = (-0.0442, -0.1680) | Var(H1, H2) = (10.3154, 9.9557)
+      wy: Overall Mean = -0.1958 | Mean(H1, H2) = (0.1687, -0.5604) | Var(H1, H2) = (3.8883, 6.3041)

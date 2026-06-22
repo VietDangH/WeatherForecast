@@ -1,0 +1,30 @@
+SARIMA diagnostics
+==================
+
+Model: SARIMA(order=(1, 0, 1), seasonal_order=(1, 0, 1, 24), trend='c')
+Fit scope: 2021-2023
+Targets are modeled independently and combined into a 24 x 7 forecast.
+
+ADF stationarity on train only
+-----------------------------
+For ADF, p < 0.05 rejects the unit-root null and is treated as stationary.
+variable   adf_stat      p_value  used_lag  nobs  stationary_at_0_05
+    temp  -6.526288 1.012708e-08        49 26230                True
+      rh -12.503263 2.776245e-23        49 26230                True
+     dew  -6.995515 7.551665e-10        49 26230                True
+pressure  -7.225294 2.060616e-10        49 26230                True
+   cloud -14.716501 2.794631e-27        49 26230                True
+      wx -13.190987 1.144228e-24        49 26230                True
+      wy -13.910895 5.513095e-26        49 26230                True
+
+Post-fit diagnostics
+--------------------
+For Ljung-Box and Jarque-Bera, p > 0.05 is treated as good.
+variable           aic           bic  converged  ljung_box_lag  ljung_box_stat  ljung_box_p_value  ljung_box_good_at_0_05  jarque_bera_stat  jarque_bera_p_value  residual_normality_good_at_0_05  residual_skew  residual_kurtosis
+    temp  43023.258159  43072.317540       True             24     1283.403083      3.977103e-256                   False      3.199088e+05                  0.0                            False      -1.251505          19.908255
+      rh 133743.498015 133792.557396       True             24      855.389254      4.047512e-165                   False      8.424694e+04                  0.0                            False       0.517047          11.710252
+     dew  38808.655407  38857.714788       True             24      514.635667       1.517728e-93                   False      2.759472e+05                  0.0                            False      -0.617162          18.826655
+pressure  23021.594562  23070.653943      False             24     6449.618676       0.000000e+00                   False      1.793474e+11                  0.0                            False       3.682057       12800.948763
+   cloud 228830.953164 228880.012545       True             24      410.272447       5.828955e-72                   False      3.453650e+04                  0.0                            False      -0.227711           8.597569
+      wx 118452.617998 118501.677379       True             24      413.416202       1.315874e-72                   False      5.785016e+04                  0.0                            False       0.405773          10.223059
+      wy 113825.852562 113874.911943       True             24      263.434126       3.535611e-42                   False      3.386691e+04                  0.0                            False       0.077133           8.559217

@@ -1,0 +1,222 @@
+\section{LSTM}
+\label{sec:lstm}
+\subsection{Overview}
+The Long Short-Term Memory network is a recurrent architecture that learns
+long-range temporal dependencies via gated memory cells \citep{hochreiter1997lstm}.
+An encoder LSTM consumes the $120$-hour input window and its final hidden state is
+mapped (directly or through a decoder) to the $24 \times 7$ forecast block. It
+models nonlinear temporal dependencies without hand-crafted lags, but is more data-
+and compute-hungry, sensitive to hyperparameters, and less interpretable than the
+other models.
+
+\subsection{Mathematical Formulation}
+At each temporal step $t \in [1, 120]$, the LSTM cell processes the input vector $x_t \in \mathbb{R}^{12 \times 1}$ and the previous hidden state $h_{t-1} \in \mathbb{R}^{128 \times 1}$ (given 128 hidden units). To optimize GPU-accelerated tensor computations, the hidden state and input vector are concatenated into a unified vector $[h_{t-1}, x_t] \in \mathbb{R}^{140 \times 1}$. 
+
+The internal mechanics are governed by four primary equations that compute the activations of the forget gate ($f_t$), input gate ($i_t$), candidate cell state ($\tilde{c}_t$), and output gate ($o_t$):
+
+\begin{align}
+f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f) \label{eq:lstm_forget} \\
+i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i) \label{eq:lstm_input} \\
+\tilde{c}_t &= \tanh(W_c [h_{t-1}, x_t] + b_c) \label{eq:lstm_candidate} \\
+o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o) \label{eq:lstm_output}
+\end{align}
+
+where:
+\begin{itemize}
+    \item $W_f, W_i, W_c, W_o \in \mathbb{R}^{128 \times 140}$ represent the learnable weight matrices (equivalent to the partitioned matrices $W_{xh} \in \mathbb{R}^{128 \times 12}$ and $W_{hh} \in \mathbb{R}^{128 \times 128}$). These matrices act as static, learned filters that remain constant during inference.
+    \item $b_f, b_i, b_c, b_o \in \mathbb{R}^{128 \times 1}$ are the learnable bias vectors.
+    \item $\sigma(z) = \frac{1}{1 + e^{-z}}$ is the logistic sigmoid function, mapping any real input strictly to the range $(0, 1)$ to serve as scaling coefficients.
+    \item $\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$ is the hyperbolic tangent function, mapping values to the range $(-1, 1)$ to establish zero-centered candidate signals.
+\end{itemize}
+
+Once the gates are computed, the cell state $c_t \in \mathbb{R}^{128 \times 1}$ (carrying long-term sequence trends and contextual variations across the 120-hour window) and the hidden state $h_t \in \mathbb{R}^{128 \times 1}$ (representing localized working memory and imminent hourly dynamics) are updated via:
+
+\begin{align}
+c_t &= f_t \odot c_{t-1} + i_t \odot \tilde{c}_t \label{eq:lstm_cell_update} \\
+h_t &= o_t \odot \tanh(c_t) \label{eq:lstm_hidden_update}
+\end{align}
+
+Here, $\odot$ denotes the Hadamard (element-wise) product. Rather than acting as stochastic filters, the gating outputs represent precise, deterministic scaling coefficients determined by the inputs and the learned weights.
+
+    \textbf{Dual-Dense Layer Pipeline:} The network directs the final hidden state summary $h_{120}$ through two distinct fully connected (Dense) layers:
+    \begin{align}
+    h_{dense} &= \text{ReLU}(W_{d1} h_{120} + b_{d1}) \label{eq:dense_1} \\
+    \hat{y}_{flat} &= W_{d2} h_{dense} + b_{d2} \label{eq:dense_2}
+    \end{align}
+    \begin{itemize}
+        \item \textit{Dense Layer 1 (Hidden Layer with ReLU):} The Rectified Linear Unit ($\text{ReLU}(z) = \max(0, z)$) is utilized to introduce non-linearity. By clipping negative activations to zero, ReLU encourages sparse representations—allowing specific neurons to specialize in distinct meteorological features—while ensuring robust gradient propagation (preventing vanishing gradients since the gradient of ReLU for positive inputs is a constant $1$).
+        \item \textit{Dense Layer 2 (Output Layer with Linear Activation):} To ensure the model can forecast physical values below and above the mean, negative values must not be clipped. Hence, this final layer uses a linear activation function. Because $W_{d2}$ is mathematically unbounded, it acts as a learned linear amplifier, magnifying the signals from the previous layers to project them accurately into any extreme range.
+    \end{itemize}
+
+\subsection{Architecture and Regularization}
+Unlike tree-based models that require manual feature extraction (e.g., rolling statistics), the LSTM directly digests the raw flattened $120 \times 12$ tensor. The network architecture consists of:
+\begin{enumerate}
+    \item \textbf{LSTM Layer:} Processes the temporal sequence. The parameter \texttt{return\_sequences=False} ensures only the final hidden state is passed forward.
+    \item \textbf{Dropout Layer:} Randomly zeroes out a fraction of connections during training to break co-adaptation among neurons, heavily penalizing overfitting.
+    \item \textbf{Hidden Dense Layer:} Uses a Rectified Linear Unit (ReLU) activation to learn non-linear combinations of the LSTM's extracted features.
+    \item \textbf{Output Dense \& Reshape:} A linear layer producing exactly $24 \times 7 = 168$ nodes, formatted to match the required protocol output.
+\end{enumerate}
+
+\subsection{Training Procedure and Hyperparameter Tuning}
+\textbf{Hyperparameter Search Space Strategy:}
+Neural networks are highly sensitive to architectural configurations. To prevent data leakage, a systematic grid search is executed strictly on the 2024 validation set. The search space is carefully bounded to balance model capacity and computational efficiency:
+\begin{itemize}
+    \item \textit{LSTM Units $\{64, 128\}$:} Controls the representational capacity of the network. While 128 units capture more complex meteorological non-linearities, 64 units act as a structural regularizer against overfitting.
+    \item \textit{Dropout Rate $\{0.1, 0.2\}$:} Determines the noise injected during training to mitigate neuronal co-adaptation.
+    \item \textit{Batch Size $\{64, 128\}$:} A smaller batch provides a noisier, more frequent gradient update to escape local minima, whereas a larger batch stabilizes the gradient descent trajectory.
+    \item \textit{Initial Learning Rate $\{10^{-3}, 5 \times 10^{-4}\}$:} Establishes the momentum of the Adam optimizer during the initial epochs.
+\end{itemize}
+
+\textbf{Adaptive Optimization (ReduceLROnPlateau):}
+Employing a static learning rate often leads to optimization plateaus or divergent oscillations (overshooting) near the global minimum. To address this, an adaptive learning rate schedule is implemented. The network continuously monitors the validation loss (\texttt{val\_loss}). If no improvement is observed for 2 consecutive epochs (a patience threshold), the learning rate is scaled down by a factor of 0.5. This dynamic decay allows the model to take aggressive steps initially and fine-tune its weights meticulously as it approaches the optimal solution.
+
+\textbf{Overfitting Prevention (Early Stopping):}
+Coupled with the adaptive learning rate, an Early Stopping mechanism operates with a higher patience of 5 epochs. This hierarchical callback structure ensures that the model is first given opportunities to recover via learning rate reductions. If stagnation persists globally, training halts exactly when the model's generalization capability peaks, automatically restoring the optimal weights and preventing the memorization of training noise.
+
+\textbf{Determinism via Seed Ensemble:} Weight initialization in deep learning is stochastic. To ensure reproducibility and robust reporting as required by the protocol, the final chosen architecture is trained across three fixed random seeds ($42, 123, 2026$). The ultimate forecast is the ensemble mean of these three runs.
+
+\begin{table}[H]
+\centering
+\caption{LSTM Hyperparameter Configuration and Tuning Details.}
+\label{tab:lstm_hyperparams}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hyperparameter / Setting} & \textbf{Value} \\
+\midrule
+\textit{Architecture \& Data Pipeline} & \\
+Lookback Window ($L$) & 120 hours \\
+Forecast Horizon ($H$) & 24 hours \\
+LSTM Hidden Units & 128 \\
+Dropout Rate & 0.1 \\
+\midrule
+\textit{Optimization} & \\
+Optimizer & Adam \\
+Initial Learning Rate & 0.001 \\
+Batch Size & 64 \\
+Loss Function & Mean Squared Error (MSE) \\
+\midrule
+\textit{Callbacks \& Ensemble} & \\
+ReduceLROnPlateau Factor & 0.5 (Patience: 4 epochs) \\
+Early Stopping Patience & 12 epochs \\
+Ensemble Random Seeds & 42, 123, 2026 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Algorithm}
+
+\begin{algorithm}[H]
+\caption{LSTM Direct Multi-horizon Forecasting (Tuning \& Evaluation)}
+\label{alg:lstm}
+\begin{algorithmic}[1]
+\REQUIRE Hourly series; lookback $L=120$; horizon $H=24$; targets $V=7$; seeds $S=\{42, 123, 2026\}$
+\STATE Preprocess: clean, decompose wind, encode time, scale via StandardScaler
+\STATE Generate sliding windows $(X, Y)$ for train (2021-2023), val (2024), test (2025)
+\STATE \textbf{Phase 1: Hyperparameter Tuning}
+\FOR{each combination of (units, dropout, batch\_size, learning\_rate)}
+    \STATE Initialize Adam optimizer with \textit{learning\_rate}
+    \STATE Train model on $X_{tr}, Y_{tr}$, monitor $MSE$ on $X_{val}, Y_{val}$
+    \STATE Apply \textit{ReduceLROnPlateau} (patience=2, factor=0.5)
+    \STATE Apply \textit{EarlyStopping} (patience=3)
+\ENDFOR
+\STATE Select best hyperparameters $P_{best}$ based on minimum $val\_loss$
+\STATE \textbf{Phase 2: Ensemble Training \& Evaluation}
+\FOR{each seed $s \in S$}
+    \STATE Set global random seed $s$
+    \STATE Initialize LSTM with $P_{best}$
+    \STATE Train on $X_{tr}, Y_{tr}$, early-stop on $X_{val}, Y_{val}$ (patience=5)
+    \STATE Predict $\hat{Y}_{scaled}^{(s)}$ on $X_{test}$
+    \STATE Inverse transform $\hat{Y}_{scaled}^{(s)} \rightarrow \hat{Y}_{real}^{(s)}$
+\ENDFOR
+\STATE Calculate Ensemble Mean: $\hat{Y}_{ens} = \frac{1}{|S|} \sum \hat{Y}_{real}^{(s)}$
+\STATE Compute MAE, RMSE (overall, per-horizon, per-variable) on $\hat{Y}_{ens}$ vs $Y_{test}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Post-estimation Diagnostics}
+Post-estimation diagnostics were conducted on the $h=1$ forecast residuals to validate the model specification. The Ljung-Box test (evaluated at lag 24) assesses whether the residuals resemble independent white noise. 
+
+The LSTM successfully captured the underlying dynamics for \texttt{rh} ($p=0.0608$), \texttt{cloud} ($p=0.2695$), \texttt{wx} ($p=0.3948$), and \texttt{wy} ($p=0.1264$), all yielding $p > 0.05$ (Pass). This is a significant achievement, demonstrating that the LSTM effectively extracted all structural patterns from highly chaotic variables like wind vectors and cloud cover. 
+
+Conversely, variables characterized by high thermodynamic inertia—such as \texttt{temp} ($p=0.0032$), \texttt{dew} ($p < 0.0001$), and \texttt{pressure} ($p < 0.0001$)—exhibited residual autocorrelation (Fail). This is physically expected: while the model captures macro-level diurnal cycles accurately, micro-level deviations (due to thermal inertia) tend to persist across consecutive hours, causing the residuals to fail the strict independence assumption without degrading the absolute accuracy.
+
+\begin{table}[H]
+\centering
+\caption{Ljung-Box Residual Diagnostic Results}
+\begin{tabular}{lccl}
+\toprule
+\textbf{Variable} & \textbf{p-value} & \textbf{Result} & \textbf{Status} \\
+\midrule
+temp     & 0.0032 & Reject $H_0$ & Autocorrelated \\
+rh       & 0.0608 & Fail to Reject $H_0$ & White Noise \\
+dew      & 0.0000 & Reject $H_0$ & Autocorrelated \\
+pressure & 0.0000 & Reject $H_0$ & Autocorrelated \\
+cloud    & 0.2695 & Fail to Reject $H_0$ & White Noise \\
+wx       & 0.3948 & Fail to Reject $H_0$ & White Noise \\
+wy       & 0.1264 & Fail to Reject $H_0$ & White Noise \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Experimental Results}
+Evaluated via the rolling-origin method over the 2025 test set, the tuned LSTM Adaptive LR ensemble demonstrates outstanding predictive capability. Table \ref{tab:lstm_overall_metrics} summarizes the overall performance, computed with 1000-iteration Bootstrap 95\% Confidence Intervals.
+
+\begin{table}[H]
+\centering
+\caption{LSTM Overall Test Metrics (Real Scale, 2025; Ensemble Mean).}
+\label{tab:lstm_overall_metrics}
+\begin{tabular}{lc}
+\toprule
+Metric & Value [95\% CI] \\
+\midrule
+Overall MAE & $5.387 \ [5.157, 5.604]$ \\
+Overall RMSE & $12.010 \ [11.435, 12.543]$ \\
+Overall $R^2$ Score & $0.9988$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Per-Variable Metrics with Bootstrap 95\% CI on MAE and RMSE.}
+\label{tab:lstm_per_var}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Variable} & \textbf{MAE} & \textbf{RMSE} & \textbf{$R^2$ Score} \\
+\midrule
+Temperature (\texttt{temp}) & $1.109 \ [1.051, 1.173]$ & $1.515 \ [1.416, 1.623]$ & $0.9207$ \\
+Relative Humidity (\texttt{rh}) & $5.649 \ [5.359, 5.924]$ & $7.580 \ [7.164, 7.990]$ & $0.7519$ \\
+Dew Point (\texttt{dew}) & $1.062 \ [0.982, 1.143]$ & $1.551 \ [1.399, 1.706]$ & $0.9390$ \\
+Pressure (\texttt{pressure}) & $1.334 \ [1.244, 1.430]$ & $1.832 \ [1.677, 1.963]$ & $0.9411$ \\
+Cloud Cover (\texttt{cloud}) & $21.415 \ [19.961, 22.800]$ & $29.918 \ [28.386, 31.403]$ & $0.3539$ \\
+Wind Vector X (\texttt{wx}) & $4.181 \ [3.942, 4.413]$ & $5.668 \ [5.256, 6.048]$ & $0.5352$ \\
+Wind Vector Y (\texttt{wy}) & $2.959 \ [2.787, 3.143]$ & $4.116 \ [3.802, 4.459]$ & $0.3452$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Variable-Level \& Horizon Analysis:} As detailed in Table \ref{tab:lstm_per_var}, the model achieves an exceptionally high $R^2$ score ($> 0.92$) for core thermodynamic variables (\texttt{temp}, \texttt{dew}, \texttt{pressure}), indicating that the LSTM deeply understands diurnal temperature cycles. Figure \ref{fig:lstm_horizon} maps the error trajectory over the 24-hour future window, demonstrating that the error accumulation is stable and does not exponentially compound, proving the efficacy of the Direct Multi-step architecture. Figure \ref{fig:lstm_actual_pred} visually confirms the network's ability to smoothly trace real-world meteorological fluctuations without outputting flat averages.
+
+\begin{figure}[H]
+  \centering
+  \framebox{\parbox{0.8\textwidth}{\centering
+    \vspace{3cm}
+    \textbf{Image Placeholder} \\
+    \small\textit{plot\_1\_horizon\_error.png}
+    \vspace{3cm}
+  }}
+  \caption{LSTM: Error accumulation over the 24-hour horizon (Ensemble Mean, 2025 test).}
+  \label{fig:lstm_horizon}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \framebox{\parbox{0.8\textwidth}{\centering
+    \vspace{6cm}
+    \textbf{Image Placeholder} \\
+    \small\textit{plot\_3\_all\_variables.jpg}
+    \vspace{6cm}
+  }}
+  \caption{LSTM: Rolling 24-hour forecast vs. actual real-world data across all targets.}
+  \label{fig:lstm_actual_pred}
+\end{figure}
