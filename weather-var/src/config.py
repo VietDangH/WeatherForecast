@@ -12,7 +12,7 @@ import os
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 PKG_ROOT = os.path.dirname(SRC_DIR)            # weather-var/
 REPO_ROOT = os.path.dirname(PKG_ROOT)          # d:\WeatherForecast
-DATA_PATH = os.path.join(REPO_ROOT, "weather_dataset.csv")
+DATA_PATH = os.path.join(REPO_ROOT, "data", "weather_dataset.csv")  # git-tracked copy
 RESULTS_DIR = os.path.join(PKG_ROOT, "results")
 PLOTS_DIR = os.path.join(RESULTS_DIR, "plots")
 

@@ -1,11 +1,12 @@
 """Entry point: prep -> stationarity/diff -> fit -> diagnostics -> rolling eval.
 
-Run from anywhere:  python weather-var/run.py
+Run from anywhere:  python weather-var/src/run.py
 """
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
+# This script lives alongside its modules in src/; make sure that dir is importable.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import numpy as np
 import pandas as pd
@@ -80,7 +81,10 @@ def main():
 
     # 5. Diagnostics ---------------------------------------------------------
     say("\n== Diagnostics ==")
-    diag_text, stable, lb_ok = diagnostics.run(res, lb_lag=config.HORIZON)
+    diag_text, stable, lb_ok, pv = diagnostics.run(res, lb_lag=config.HORIZON)
+    # Fold the pre-fit ADF stationarity result into the per-variable table.
+    pv.insert(1, "adf_p", pv["variable"].map(adf_before))
+    pv.insert(2, "adf_stationary", pv["adf_p"] <= 0.05)
     say(diag_text)
     if not stable:
         say("WARNING: VAR is not stable — forecasts may diverge.")
@@ -100,14 +104,37 @@ def main():
 
     # 7. Persist results -----------------------------------------------------
     os.makedirs(config.RESULTS_DIR, exist_ok=True)
-    evaluate.to_long_csv(metrics).to_csv(
-        os.path.join(config.RESULTS_DIR, "metrics.csv"), index=False)
 
-    with open(os.path.join(config.RESULTS_DIR, "diagnostics.txt"), "w",
-              encoding="utf-8") as fh:
+    def _path(name):
+        return os.path.join(config.RESULTS_DIR, name)
+
+    # 7a. Forecast accuracy (per-horizon + per-variable) ---------------------
+    evaluate.to_long_csv(metrics).to_csv(_path("metrics.csv"), index=False)
+
+    # 7b. Diagnostics, separated from the run log ----------------------------
+    #     - diagnostics.csv : per-variable test table (ADF / Ljung-Box / JB)
+    #     - diagnostics.txt : human-readable diagnostics report only
+    pv.to_csv(_path("diagnostics.csv"), index=False)
+
+    diag_report = [
+        "== VAR diagnostics ==",
+        f"Model: VAR({p})  |  differencing d={d}  |  train rows={len(train_diff_full)}",
+        "",
+        "-- Stationarity (ADF on train, per variable; p <= 0.05 = stationary) --",
+    ]
+    for c, pp in adf_before.items():
+        diag_report.append(f"  {c:>10}: p = {pp:.4g}  "
+                           f"[{'stationary' if pp <= 0.05 else 'NON-stationary'}]")
+    diag_report += ["", "-- Post-fit residual diagnostics --", diag_text,
+                    "", "Per-variable table: diagnostics.csv"]
+    with open(_path("diagnostics.txt"), "w", encoding="utf-8") as fh:
+        fh.write("\n".join(diag_report))
+
+    # 7c. Full run log (everything printed) ----------------------------------
+    with open(_path("run_log.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(log))
 
-    _plots(res, real, scaled, scaler, max(d, 1), metrics, pred_df, actual_df)
+    _plots(res, real, scaled, scaler, d, metrics, pred_df, actual_df)
     say(f"\nResults written to {config.RESULTS_DIR}")
 
 

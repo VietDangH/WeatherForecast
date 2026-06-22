@@ -271,29 +271,3 @@ The error growth is approximately linear with horizon, consistent with a model t
 **Forecast intervals:** All variables show monotonic widening from h=1 to h=24. Pressure widens most aggressively (×5.3 in DLinear-I) due to its long-memory structure — the model's uncertainty about pressure grows faster than for temperature (×1.6).
 
 **Bootstrap CI:** MAE confidence interval width under ±4% for both variants confirms stable metric estimates.
-
----
-
-## 7. Analysis
-
-### 7.1 What DLinear Does Well
-
-**Variables with strong diurnal cycles** (temperature, dew point, relative humidity) are forecast tightly. Temperature MAE of 1.18°C (DLinear-I) is competitive with the best models in this study. This is a direct consequence of the decomposition design: the seasonal branch is purpose-built to capture the 24 h oscillation, and the sinusoidal time encodings give the model explicit knowledge of where it sits within the cycle.
-
-**Surface pressure** benefits most from individual weights (+15% I over S). Unlike temperature, pressure does not follow a clean 24 h sinusoid — its variations are driven by synoptic-scale weather systems evolving over multiple days. Shared weights, dominated by the strong diurnal signals of temperature and humidity, are suboptimal for pressure. Individual weights free pressure's linear layers to learn its own, slower temporal dynamics.
-
-### 7.2 What DLinear Struggles With
-
-**Cloud cover** is the hardest variable (MAE ~23%) across both variants and all models in this study. Three factors conspire: (a) cloud cover is fundamentally bimodal (clear = 0%, overcast = 100%), making MSE poorly suited; (b) it has the weakest linear correlation with other variables; (c) its transitions (clear ↔ overcast) are often sharp and driven by unobserved atmospheric processes. A dedicated classification-based approach may be warranted.
-
-**Wind components** (wx, wy) have moderate MAE (3–4 km/h) but high RMSE/MAE ratios (~1.4), indicating occasional large misses during gust events. Wind gusts are inherently stochastic at hourly resolution — the 120 h lookback contains limited predictive signal for a specific gust 24 h ahead.
-
-**Residual autocorrelation** in dew_point and pressure suggests the 120 h lookback may be insufficient for variables with long memory. Increasing the lookback (e.g. to 168 h) or adding explicit lag features could capture more of this structure.
-
-### 7.3 S vs. I Trade-off in Practice
-
-DLinear-I's +2.7% MAE improvement comes at 10.9× the parameters. Whether this is worthwhile depends on context:
-
-- **For model comparison:** DLinear-I should be the reported variant — it represents the best achievable with the DLinear architecture and follows the principle of giving each model its fair configuration.
-- **For deployment:** DLinear-S is the pragmatic choice — 85 s training, 5,892 parameters, and only marginally worse accuracy. The 2.7% gap is within the bootstrap CI width (~3.5%).
-- **For interpretability:** DLinear-S is strongly preferred — its single pair of W_t, W_s matrices (24×120 each) can be visualized as heatmaps showing what past hours influence each future hour, for trend vs. seasonal branches separately.

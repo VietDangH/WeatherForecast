@@ -176,9 +176,15 @@ these analytically).
 ## 10. Reference implementation
 
 The VAR reference pipeline lives in [`weather-var/`](weather-var/):
-`run.py` → `src/{config,data_prep,var_model,diagnostics,evaluate}.py`,
-writing `results/metrics.csv`, `results/diagnostics.txt`, and `results/plots/`.
-Run with: `python weather-var/run.py`.
+`src/{config,data_prep,var_model,diagnostics,evaluate,run}.py`. It writes to `results/`:
+
+- `metrics.csv` — forecast accuracy (overall / per-horizon / per-variable MAE & RMSE).
+- `diagnostics.txt` — human-readable diagnostics report only (ADF, stability, Ljung-Box, normality).
+- `diagnostics.csv` — **per-variable** diagnostics table (adf_p, ljungbox_p, skew, kurtosis, jarque_bera_p, pass flags).
+- `run_log.txt` — full run log (everything printed).
+- `plots/` — `pred_vs_actual.png`, `per_horizon_error.png`, `forecast_interval_temp.png`.
+
+Run with: `python weather-var/src/run.py`.
 
 ---
 

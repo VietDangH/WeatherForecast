@@ -1,8 +1,7 @@
-== Data preparation ==
-Targets: ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
-Rows  train=26280  val=8784  test=8760
+== VAR diagnostics ==
+Model: VAR(50)  |  differencing d=0  |  train rows=26280
 
-== Stationarity (ADF on train) ==
+-- Stationarity (ADF on train, per variable; p <= 0.05 = stationary) --
         temp: p = 1.013e-08  [stationary]
           rh: p = 2.776e-23  [stationary]
          dew: p = 7.552e-10  [stationary]
@@ -11,14 +10,9 @@ Rows  train=26280  val=8784  test=8760
           wx: p = 1.144e-24  [stationary]
           wy: p = 5.513e-26  [stationary]
 
-Series already stationary; d=0.
-
-== Lag-order selection (AIC) ==
-Selected lag order p = 50 (maxlags=60)
-Fitted VAR(50) on 26280 differenced train rows, 7 variables.
-
-== Diagnostics ==
+-- Post-fit residual diagnostics --
 Stability (roots inside unit circle): True
+
 Ljung-Box residual autocorrelation at lag 24 (p > 0.05 = white noise = good):
         temp: p = 0.999  [OK]
           rh: p = 1  [OK]
@@ -27,19 +21,17 @@ Ljung-Box residual autocorrelation at lag 24 (p > 0.05 = white noise = good):
        cloud: p = 1  [OK]
           wx: p = 1  [OK]
           wy: p = 1  [OK]
+
+Residual normality per variable (Jarque-Bera; p > 0.05 = normal):
+        temp: p = 0  skew= -1.22 kurt=  13.74  [non-normal]
+          rh: p = 0  skew=  0.52 kurt=   8.84  [non-normal]
+         dew: p = 0  skew= -0.45 kurt=  17.82  [non-normal]
+    pressure: p = 0  skew=  0.09 kurt=   5.85  [non-normal]
+       cloud: p = 0  skew= -0.13 kurt=   8.13  [non-normal]
+          wx: p = 0  skew=  0.44 kurt=  10.26  [non-normal]
+          wy: p = 0  skew=  0.07 kurt=   8.49  [non-normal]
+
 Residual normality (joint): stat = 5.247e+05, p = 0
-  -> non-normal residuals: analytical forecast intervals are approximate.
+  -> non-normal residuals: analytical forecast intervals are approximate; prefer the bootstrap interval.
 
-== Rolling-origin evaluation (test year) ==
-Origins evaluated: 364 (step=24h)
-Overall  MAE = 5.5715   RMSE = 12.0729
-
-Per-variable:
-variable       MAE      RMSE
-    temp  1.114968  1.550779
-      rh  5.598770  7.505347
-     dew  1.095145  1.585720
-pressure  1.101170  1.625069
-   cloud 22.818136 30.084698
-      wx  4.224957  5.743101
-      wy  3.047389  4.280020
+Per-variable table: diagnostics.csv
