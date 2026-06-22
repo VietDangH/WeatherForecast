@@ -1,0 +1,8 @@
+# DLinear generated artifacts
+__pycache__/
+checkpoints/
+checkpoints_i/
+*.npz
+*.pkl
+*.pth
+*.png
