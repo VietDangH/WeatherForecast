@@ -1,0 +1,43 @@
+\babel@toc {english}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Dataset columns used in this study and their clean names.}}{4}{table.caption.4}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Dataset overview.}}{5}{table.caption.5}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Summary statistics for the seven targets (full 2021--2025 period, native units).}}{6}{table.caption.6}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Stationarity tests on the seven targets (full 2021--2025 series).}}{16}{table.caption.22}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Chronological data split.}}{23}{table.caption.27}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Post-estimation diagnostic tests, their hypotheses, and applicability.}}{26}{table.caption.28}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Decomposition of the first 48 hours of temperature (2021).}}{30}{table.caption.39}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces DLinear training hyperparameters.}}{32}{table.caption.42}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces DLinear post-estimation diagnostics (2025 test).}}{34}{table.caption.44}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Overall test-set performance (2025, real scale, 3-seed ensemble).}}{35}{table.caption.46}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Per-variable MAE (real scale, 2025).}}{35}{table.caption.48}%
+\contentsline {table}{\numberline {5.7}{\ignorespaces Per-horizon MAE (DLinear-S, 2025 test).}}{36}{table.caption.51}%
+\contentsline {table}{\numberline {5.8}{\ignorespaces ARIMA-family members as special cases of Eq.~\eqref {eq:sarima}.}}{38}{table.caption.53}%
+\contentsline {table}{\numberline {5.9}{\ignorespaces Per-feature candidate grids. Each row is one target's search space, bounded by its own ACF/PACF signature; seasonal period $s=24$ throughout, and $(0,0,0)$ denotes a non-seasonal candidate. Validation MAE picks the winner (Table~\ref {tab:sarima-selected}).}}{40}{table.caption.56}%
+\contentsline {table}{\numberline {5.10}{\ignorespaces Selected model per target (lowest 2024 validation MAE from each grid; $s=24$, $d=D=0$). All seven converged on the final 2021--2023 fit.}}{40}{table.caption.58}%
+\contentsline {table}{\numberline {5.11}{\ignorespaces Training and evaluation settings (per-feature ARIMA-family pipeline).}}{42}{table.caption.61}%
+\contentsline {table}{\numberline {5.12}{\ignorespaces Post-estimation diagnostics for the selected models (train fit / 2025 test).}}{43}{table.caption.63}%
+\contentsline {table}{\numberline {5.13}{\ignorespaces SARIMA --- overall test metrics (real scale, 2025).}}{44}{table.caption.64}%
+\contentsline {table}{\numberline {5.14}{\ignorespaces SARIMA --- per-variable error (real scale, horizon-averaged, 2025).}}{44}{table.caption.65}%
+\contentsline {table}{\numberline {5.15}{\ignorespaces SARIMA --- selected per-horizon MAE (2025 test).}}{44}{table.caption.66}%
+\contentsline {table}{\numberline {5.16}{\ignorespaces VAR configuration.}}{49}{table.caption.77}%
+\contentsline {table}{\numberline {5.17}{\ignorespaces VAR per-variable diagnostics (residuals of the fitted VAR(50), training set).}}{51}{table.caption.80}%
+\contentsline {table}{\numberline {5.18}{\ignorespaces VAR --- overall test metrics (real scale, 2025; $N=364$ origins, 95\% bootstrap CI).}}{52}{table.caption.81}%
+\contentsline {table}{\numberline {5.19}{\ignorespaces VAR --- per-variable error (real scale, horizon-averaged, 2025; $R^2$ vs.\ test mean).}}{52}{table.caption.82}%
+\contentsline {table}{\numberline {5.20}{\ignorespaces XGBoost hyperparameters (fixed a priori; trees chosen by early stopping).}}{58}{table.caption.95}%
+\contentsline {table}{\numberline {5.21}{\ignorespaces XGBoost post-estimation diagnostics (1-step validation residuals, seed~0).}}{60}{table.caption.98}%
+\contentsline {table}{\numberline {5.22}{\ignorespaces XGBoost --- overall test metrics (real scale, 2025; seed ensemble $\{0,1,2\}$).}}{61}{table.caption.99}%
+\contentsline {table}{\numberline {5.23}{\ignorespaces XGBoost --- per-variable error (real scale, horizon-averaged, 2025).}}{61}{table.caption.100}%
+\contentsline {table}{\numberline {5.24}{\ignorespaces LSTM Hyperparameter Configuration and Tuning Details.}}{67}{table.caption.105}%
+\contentsline {table}{\numberline {5.25}{\ignorespaces Ljung-Box Residual Diagnostic Results}}{69}{table.caption.107}%
+\contentsline {table}{\numberline {5.26}{\ignorespaces LSTM Overall Test Metrics (Real Scale, 2025; Ensemble Mean).}}{70}{table.caption.109}%
+\contentsline {table}{\numberline {5.27}{\ignorespaces Per-Variable Metrics with Bootstrap 95\% CI on MAE and RMSE.}}{71}{table.caption.110}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Overall test performance (real scale, 2025 rolling-origin).}}{75}{table.caption.121}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Per-variable MAE by model (real scale).}}{75}{table.caption.122}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Per-horizon MAE at selected lead times (real scale, 2025). Best per column in bold.}}{77}{table.caption.124}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Forecast-accuracy significance on the overall (unit-standardised) loss. DM statistics are paired vs.\ the best model (LSTM) and vs.\ the univariate baseline (SARIMA); $p$-values are Holm-corrected for multiple comparisons. The $90\%$ Model Confidence Set contains every model not significantly worse than the best.}}{78}{table.caption.127}%

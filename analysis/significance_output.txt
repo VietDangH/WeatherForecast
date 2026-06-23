@@ -1,0 +1,52 @@
+[load] SARIMA   (8760, 7)  2025-01-01 00:00:00 .. 2025-12-31 23:00:00
+[load] VAR      (8736, 7)  2025-01-01 01:00:00 .. 2025-12-31 00:00:00
+[load] XGBoost  (8760, 7)  2025-01-01 00:00:00 .. 2025-12-31 23:00:00
+[load] LSTM     (8640, 7)  2025-01-06 00:00:00 .. 2025-12-31 23:00:00
+[load] DLinear  (8640, 7)  2025-01-06 00:00:00 .. 2025-12-31 23:00:00
+
+[align] common timestamps: 8617
+
+[overall] mean standardised loss (lower=better):
+   LSTM     0.3649
+   XGBoost  0.3663
+   VAR      0.3719
+   DLinear  0.3790
+   SARIMA   0.4088
+   best = LSTM
+
+[DM] each model vs BEST (LSTM); dbar>0 => model worse than best:
+   XGBoost  dbar=+0.0014  DM=+0.47  p=6.39e-01  p_holm=6.39e-01
+   VAR      dbar=+0.0070  DM=+2.07  p=3.82e-02  p_holm=7.65e-02
+   DLinear  dbar=+0.0141  DM=+4.03  p=5.69e-05  p_holm=1.71e-04
+   SARIMA   dbar=+0.0439  DM=+9.55  p=1.64e-21  p_holm=6.54e-21
+
+[DM] each model vs SARIMA baseline; dbar<0 => model better than SARIMA:
+   LSTM     dbar=-0.0439  DM=-9.55  p=1.64e-21  p_holm=1.64e-21
+   XGBoost  dbar=-0.0425  DM=-12.68  p=1.69e-36  p_holm=6.78e-36
+   VAR      dbar=-0.0369  DM=-9.87  p=7.12e-23  p_holm=1.42e-22
+   DLinear  dbar=-0.0298  DM=-10.08  p=8.74e-24  p_holm=2.62e-23
+
+[MCS] overall (size=0.10, stationary block bootstrap, block=24):
+   SARIMA   MCS p=0.000  [out]
+   DLinear  MCS p=0.000  [out]
+   VAR      MCS p=0.102  [IN ]
+   XGBoost  MCS p=0.641  [IN ]
+   LSTM     MCS p=1.000  [IN ]
+
+[MCS] per-variable 90% set membership:
+   temp      best=XGBoost  set={XGBoost}
+   rh        best=XGBoost  set={XGBoost}
+   dew       best=LSTM     set={LSTM, XGBoost, VAR}
+   pressure  best=VAR      set={VAR, DLinear}
+   cloud     best=LSTM     set={LSTM}
+   wx        best=XGBoost  set={XGBoost, VAR, LSTM}
+   wy        best=LSTM     set={LSTM}
+
+[done] n_models=5  common_obs=8617
+       wrote D:\WeatherForecast\analysis\significance_results.csv
+  model  overall_std_loss  dm_stat_vs_best  p_vs_best_holm  dm_stat_vs_sarima  p_vs_sarima_holm  mcs_pvalue  in_mcs_90
+   LSTM          0.364897              NaN             NaN          -9.551349      1.635646e-21      1.0000       True
+XGBoost          0.366319         0.469438    6.387688e-01         -12.676245      6.775633e-36      0.6408       True
+    VAR          0.371887         2.072746    7.645126e-02          -9.874177      1.424720e-22      0.1018       True
+DLinear          0.379046         4.027387    1.706524e-04         -10.084758      2.622415e-23      0.0000      False
+ SARIMA          0.408819         9.551349    6.542582e-21                NaN               NaN      0.0000      False

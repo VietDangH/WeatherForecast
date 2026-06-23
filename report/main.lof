@@ -1,0 +1,42 @@
+\babel@toc {english}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Marginal distributions of the seven targets.}}{7}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Per-variable boxplots of the seven targets for outlier inspection.}}{8}{figure.caption.8}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Wind rose: frequency of observations by direction (16 sectors), stacked by wind-speed band. Motivates decomposing the circular wind direction into the Cartesian targets \texttt {wx}, \texttt {wy}.}}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Correlation matrix of the seven targets.}}{10}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Diurnal cycle per target: mean by hour of day ($\pm 1$ standard deviation), in real units.}}{11}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Day-of-week mean of each target ($\pm 1$ standard deviation). Every profile is flat within its own spread --- there is no weekly seasonality.}}{12}{figure.caption.14}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Weekly mean of temperature, humidity, and pressure over the full period (annual context).}}{13}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Additive decomposition (period $=24$\,h) of each target into trend, diurnal seasonal, and residual, over a 3-week window (2023). Note the small residual for \texttt {temp}/\texttt {dew}/\texttt {pressure} versus the large residual for \texttt {cloud} and \texttt {wy}, and that \texttt {dew}'s structure is almost all trend rather than diurnal.}}{14}{figure.caption.18}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Rolling 30-day mean (blue) and standard deviation (red) of each target's daily series, in real units. The mean is flat apart from an annual wave (seasonality, not a unit-root trend) and the standard deviation is roughly constant --- consistent with stationarity.}}{17}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces ACF (left) and PACF (right) of each target, lags $0$--$48$ hours.}}{18}{figure.caption.24}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Lagged cross-correlation $\mathrm {corr}\big (\mathrm {row}(t),\,\mathrm {col}(t-3\text {h})\big )$ among the seven targets.}}{19}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Cross-correlation functions for the key target pairs over lags $k=-24\ldots 24$\,h, where $r(k)=\mathrm {corr}(A_t,B_{t-k})$ and $k>0$ means $B$ leads $A$. Note \texttt {temp}--\texttt {rh}, flat at lag $0$ but peaking near $k=12$\,h.}}{20}{figure.caption.26}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces DLinear architecture. The $120\times 11$ input window is split by a moving-average kernel ($k{=}25$, replication padding) into a trend $\mathbf {T}$ and a seasonal residual $\mathbf {S}$; each is mapped to the $24$-step horizon by its own linear layer, the two forecasts are summed, and a learned cross-channel projection $\mathbf {W}_{\text {proj}}\in \mathbb {R}^{11\times 7}$ produces the final $24\times 7$ forecast. DLinear-S shares $(\mathbf {W}_t,\mathbf {W}_s)$ across channels; DLinear-I gives each channel its own pair.}}{31}{figure.caption.40}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces DLinear end-to-end workflow: from raw hourly data to the rolling-origin forecast and its post-estimation diagnostics.}}{31}{figure.caption.41}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces DLinear: per-variable MAE for both variants (2025 test, log axis). Cloud cover dominates the error budget; DLinear-I edges out DLinear-S on every target.}}{36}{figure.caption.49}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces DLinear: error accumulation over the 24-hour horizon (2025 test), both variants. Error roughly doubles from $h{=}1$ to $h{=}24$ and the two variants track each other closely.}}{37}{figure.caption.52}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces SARIMA workflow: seven univariate models are selected and saved once, then rolled over 2025 and stacked into the multivariate forecast block.}}{42}{figure.caption.62}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces SARIMA: error accumulation over the 24-hour horizon (2025 test).}}{45}{figure.caption.67}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces SARIMA: MAE and RMSE by target variable (2025 test).}}{45}{figure.caption.68}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces SARIMA: rolling 24-hour forecast vs.\ actual across all seven targets (2025 test year).}}{46}{figure.caption.69}%
+\contentsline {figure}{\numberline {5.9}{\ignorespaces SARIMA: rolling one-step \texttt {temp} forecast vs.\ actual over the first two weeks of the 2025 test year (detail view).}}{47}{figure.caption.70}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces VAR prediction structure. The lagged state vectors $\mathbf {y}_{t-1},\dots ,\mathbf {y}_{t-p}$ (each a $7$-vector of \texttt {temp,rh,dew,pressure,cloud,wx,wy}) are mapped through the coefficient matrices $\mathbf {A}_1,\dots ,\mathbf {A}_p$ and summed with the intercept $\mathbf {c}$ to give the one-step forecast $\hat {\mathbf {y}}_t$; the prediction is appended as the newest lag and the window rolled forward, repeated $24$ times for the full horizon.}}{48}{figure.caption.71}%
+\contentsline {figure}{\numberline {5.11}{\ignorespaces VAR modelling pipeline: from raw hourly data to the rolling-origin forecast and its diagnostics. The dashed arrow is the specification-check feedback --- re-select the lag order if residual autocorrelation remains.}}{50}{figure.caption.78}%
+\contentsline {figure}{\numberline {5.12}{\ignorespaces VAR: error accumulation over the 24-hour horizon (2025 test).}}{53}{figure.caption.83}%
+\contentsline {figure}{\numberline {5.13}{\ignorespaces VAR: rolling 24-hour forecast vs.\ actual across the 2025 test year.}}{54}{figure.caption.84}%
+\contentsline {figure}{\numberline {5.14}{\ignorespaces VAR: 24-hour \texttt {temp} forecast at the first 2025 origin with 95\% analytic (Gaussian) and bootstrap (resampled-residual) intervals.}}{55}{figure.caption.85}%
+\contentsline {figure}{\numberline {5.15}{\ignorespaces XGBoost prediction structure. The $120\times 11$ window is encoded into $144$ engineered features feeding seven independent gradient-boosted tree ensembles (one per target), each an additive model $\DOTSB \sum@ \slimits@ _k f_k$; their $24$-step outputs are stacked into the $24\times 7$ forecast block.}}{59}{figure.caption.96}%
+\contentsline {figure}{\numberline {5.16}{\ignorespaces XGBoost: error accumulation over the 24-hour horizon (2025 test).}}{61}{figure.caption.101}%
+\contentsline {figure}{\numberline {5.17}{\ignorespaces XGBoost: validation-RMSE learning curves (seed 0), one curve per target.}}{62}{figure.caption.102}%
+\contentsline {figure}{\numberline {5.18}{\ignorespaces XGBoost: rolling 24-hour forecast vs.\ actual, first 10 days of 2025.}}{63}{figure.caption.103}%
+\contentsline {figure}{\numberline {5.19}{\ignorespaces LSTM architecture. An encoder LSTM consumes the $120\times 12$ window and emits its final hidden state $h_{120}$; dropout regularises it, and two dense layers (ReLU then linear) project to the $168$-node output reshaped to the $24\times 7$ forecast block.}}{66}{figure.caption.104}%
+\contentsline {figure}{\numberline {5.20}{\ignorespaces LSTM: pooled one-step ($h{=}1$) residual distribution. The histogram is sharply peaked at zero with long tails (leptokurtic / heavy-tailed) relative to the Gaussian-like reference curve, departing from normality and consistent with the Jarque--Bera rejection seen across the models.}}{70}{figure.caption.108}%
+\contentsline {figure}{\numberline {5.21}{\ignorespaces LSTM: Error accumulation over the 24-hour horizon (Ensemble Mean, 2025 test).}}{71}{figure.caption.111}%
+\contentsline {figure}{\numberline {5.22}{\ignorespaces LSTM: Rolling 24-hour forecast vs. actual real-world data across all targets.}}{72}{figure.caption.112}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Per-horizon MAE by model over the 24-hour horizon (2025 test). The cheap models lead at $h{=}1$; the LSTM overtakes from $h{=}4$ and is best at the long leads.}}{76}{figure.caption.123}%

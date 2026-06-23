@@ -111,6 +111,18 @@ def main():
     # 7a. Forecast accuracy (per-horizon + per-variable) ---------------------
     evaluate.to_long_csv(metrics).to_csv(_path("metrics.csv"), index=False)
 
+    # 7a'. Per-origin forecasts for paired significance testing (DM/MCS).
+    #      pred_df/actual_df are origin-major (each origin's 24 target_times are
+    #      consecutive), so reshape to (N_origins, horizon, n_targets).
+    H = config.HORIZON
+    cols = list(real.columns)
+    N = len(pred_df) // H
+    y_pred = pred_df.values.reshape(N, H, len(cols))
+    y_true = actual_df.values.reshape(N, H, len(cols))
+    origin_time = np.array(actual_df.index[::H][:N].astype("datetime64[ns]"))
+    np.savez(_path("forecasts_eval.npz"), y_true=y_true, y_pred=y_pred,
+             targets=np.array(cols), origin_time=origin_time)
+
     # 7b. Diagnostics, separated from the run log ----------------------------
     #     - diagnostics.csv : per-variable test table (ADF / Ljung-Box / JB)
     #     - diagnostics.txt : human-readable diagnostics report only

@@ -1,0 +1,8 @@
+variable,mcs_set
+temp,XGBoost
+rh,XGBoost
+dew,"LSTM, XGBoost, VAR"
+pressure,"VAR, DLinear"
+cloud,LSTM
+wx,"XGBoost, VAR, LSTM"
+wy,LSTM

@@ -289,6 +289,15 @@ def evaluate():
             json.dump({'model_type': mt, 'overall': ens_overall,
                        'per_var': ens_per_var, 'per_horizon': ens_per_horizon}, f, indent=2)
 
+        # Per-origin forecasts (seed-ensemble mean) for paired significance
+        # testing (DM/MCS). DLinear-I is the variant used in the comparison.
+        if mt == "DLinear-I":
+            yp_ens = np.mean([r['Yp_real'] for _, r in mt_list], axis=0)  # (N,24,7)
+            yt0 = mt_list[0][1]['Yt_real']                                # (N,24,7)
+            np.savez(os.path.join(config.OUTPUT_DIR, 'forecasts_eval.npz'),
+                     y_true=yt0, y_pred=yp_ens,
+                     targets=np.array(target_names))
+
         # Predicted-vs-actual plots (use first seed's predictions)
         _, r0 = mt_list[0]
         pa_dir = os.path.join(od, 'pred_vs_actual')

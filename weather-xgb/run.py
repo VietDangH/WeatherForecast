@@ -89,6 +89,13 @@ def main(smoke: bool = False):
     evaluate.plot_per_variable(metrics)
     evaluate.plot_pred_vs_actual(ds, te_o, preds_ens, Yte_r)
 
+    # Per-origin forecasts for paired significance testing (DM/MCS).
+    # origin_time = calendar timestamp of horizon-1 for each test window.
+    origin_time = np.array(ds.index[np.asarray(te_o) + 1].values, dtype="datetime64[ns]")
+    np.savez(C.RESULTS_DIR / "forecasts_eval.npz",
+             y_true=Yte_r, y_pred=preds_ens,
+             targets=np.array(list(C.TARGETS)), origin_time=origin_time)
+
     # ---- summary ----
     print("\n" + "=" * 60)
     print("FINAL — 2025 test, real scale (ensemble of seeds " + str(C.SEEDS) + ")")

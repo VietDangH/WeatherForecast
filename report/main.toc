@@ -1,0 +1,145 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{List of Figures}{iv}{chapter*.2}%
+\contentsline {chapter}{List of Tables}{vii}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Problem Motivation}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Importance of Weather Forecasting}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Research Objectives}{1}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Project Scope}{2}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Report Organisation}{2}{section.1.5}%
+\contentsline {chapter}{\numberline {2}Dataset Description}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Data Source}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Data Collection Period}{3}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Features Description}{3}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Target Variable Description}{4}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Dataset Characteristics}{4}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Exploratory Data Analysis (EDA)}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Dataset Overview}{5}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Statistical Summary}{5}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Distribution Analysis}{6}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Correlation Analysis}{9}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Temporal Analysis}{10}{section.3.5}%
+\contentsline {paragraph}{Diurnal cycle (dominant).}{10}{section*.11}%
+\contentsline {paragraph}{Weekly scale (no seasonality).}{11}{section*.13}%
+\contentsline {paragraph}{Annual cycle (context).}{12}{section*.15}%
+\contentsline {paragraph}{Putting it together: trend / seasonal / residual.}{13}{section*.17}%
+\contentsline {section}{\numberline {3.6}Time-Series Structure}{15}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Stationarity}{15}{subsection.3.6.1}%
+\contentsline {paragraph}{Augmented Dickey--Fuller (ADF).}{15}{section*.19}%
+\contentsline {paragraph}{KPSS.}{15}{section*.20}%
+\contentsline {paragraph}{How the test is run.}{15}{section*.21}%
+\contentsline {subsection}{\numberline {3.6.2}Autocorrelation Structure}{17}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}Lagged Cross-Correlation}{19}{subsection.3.6.3}%
+\contentsline {section}{\numberline {3.7}Key Findings from EDA}{20}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Data Preprocessing}{22}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Data Cleaning}{22}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Missing Value Handling}{22}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Wind Decomposition}{22}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Cyclical Time Encoding}{23}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Feature Scaling}{23}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Train/Validation/Test Split}{23}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Sliding-Window Generation}{23}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Feature Engineering Overview}{24}{section.4.8}%
+\contentsline {chapter}{\numberline {5}Forecasting Models}{25}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Post-estimation Diagnostic Tests}{25}{section.5.1}%
+\contentsline {paragraph}{Augmented Dickey--Fuller (ADF).}{26}{section*.29}%
+\contentsline {paragraph}{KPSS.}{26}{section*.30}%
+\contentsline {paragraph}{Stability (characteristic roots).}{27}{section*.31}%
+\contentsline {paragraph}{Ljung--Box $Q$-test.}{27}{section*.32}%
+\contentsline {paragraph}{Jarque--Bera.}{27}{section*.33}%
+\contentsline {section}{\numberline {5.2}DLinear}{27}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Overview}{27}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Mathematical Formulation}{28}{subsection.5.2.2}%
+\contentsline {subsubsection}{Series Decomposition}{28}{section*.34}%
+\contentsline {paragraph}{Why replication padding.}{29}{section*.35}%
+\contentsline {subsubsection}{Dual Linear Projection}{29}{section*.36}%
+\contentsline {subsubsection}{Combine and Project}{30}{section*.37}%
+\contentsline {subsubsection}{Why Decomposition Helps}{30}{section*.38}%
+\contentsline {subsection}{\numberline {5.2.3}Architecture and Forecasting Pipeline}{30}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Training Procedure}{32}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Algorithm}{33}{subsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.2.6}Post-estimation Diagnostics}{33}{subsection.5.2.6}%
+\contentsline {paragraph}{Assumptions and their validity.}{33}{section*.43}%
+\contentsline {subsection}{\numberline {5.2.7}Experimental Results}{35}{subsection.5.2.7}%
+\contentsline {subsubsection}{Overall Performance}{35}{section*.45}%
+\contentsline {subsubsection}{Per-Variable Error}{35}{section*.47}%
+\contentsline {subsubsection}{Per-Horizon Error Growth}{36}{section*.50}%
+\contentsline {section}{\numberline {5.3}SARIMA}{37}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Overview}{37}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Mathematical Formulation}{38}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Model Identification and Selection}{38}{subsection.5.3.3}%
+\contentsline {paragraph}{Step 1 --- Box--Jenkins identification from ACF/PACF.}{38}{section*.54}%
+\contentsline {paragraph}{Step 2 --- per-feature candidate grids.}{39}{section*.55}%
+\contentsline {paragraph}{Step 3 --- selection by validation MAE.}{40}{section*.57}%
+\contentsline {paragraph}{What the data chose.}{40}{section*.59}%
+\contentsline {paragraph}{Why daily ($s{=}24$) and not annual seasonality.}{41}{section*.60}%
+\contentsline {subsection}{\numberline {5.3.4}Training Procedure}{41}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Forecasting Procedure}{42}{subsection.5.3.5}%
+\contentsline {subsection}{\numberline {5.3.6}Post-estimation Diagnostics}{43}{subsection.5.3.6}%
+\contentsline {subsection}{\numberline {5.3.7}Experimental Results}{44}{subsection.5.3.7}%
+\contentsline {section}{\numberline {5.4}Vector Autoregression (VAR)}{47}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Overview}{47}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Mathematical Formulation}{47}{subsection.5.4.2}%
+\contentsline {paragraph}{Estimation.}{48}{section*.72}%
+\contentsline {paragraph}{Lag-order selection.}{48}{section*.73}%
+\contentsline {paragraph}{Stability and forecast intervals.}{48}{section*.74}%
+\contentsline {subsection}{\numberline {5.4.3}Model Specification and Training}{49}{subsection.5.4.3}%
+\contentsline {paragraph}{Stationarity and differencing order.}{49}{section*.75}%
+\contentsline {paragraph}{Lag order.}{49}{section*.76}%
+\contentsline {subsection}{\numberline {5.4.4}Forecasting Procedure}{49}{subsection.5.4.4}%
+\contentsline {subsection}{\numberline {5.4.5}Post-estimation Diagnostics}{50}{subsection.5.4.5}%
+\contentsline {paragraph}{Assumptions and their validity.}{50}{section*.79}%
+\contentsline {subsection}{\numberline {5.4.6}Experimental Results}{51}{subsection.5.4.6}%
+\contentsline {section}{\numberline {5.5}XGBoost}{55}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Overview}{55}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Mathematical Formulation}{55}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}Feature Engineering}{56}{subsection.5.5.3}%
+\contentsline {subsubsection}{Lag Features}{56}{section*.86}%
+\contentsline {subsubsection}{Rolling Mean Features}{57}{section*.87}%
+\contentsline {subsubsection}{Rolling Standard-Deviation Features}{57}{section*.88}%
+\contentsline {subsubsection}{Rolling Min/Max (Range) Features}{57}{section*.89}%
+\contentsline {subsubsection}{Time-based Features}{57}{section*.90}%
+\contentsline {subsection}{\numberline {5.5.4}Training Procedure}{57}{subsection.5.5.4}%
+\contentsline {paragraph}{One regressor per target.}{57}{section*.91}%
+\contentsline {paragraph}{Data usage and windows.}{57}{section*.92}%
+\contentsline {paragraph}{Validation and early stopping.}{58}{section*.93}%
+\contentsline {paragraph}{Determinism.}{58}{section*.94}%
+\contentsline {subsection}{\numberline {5.5.5}Forecasting Procedure}{58}{subsection.5.5.5}%
+\contentsline {subsection}{\numberline {5.5.6}Algorithm}{59}{subsection.5.5.6}%
+\contentsline {subsection}{\numberline {5.5.7}Post-estimation Diagnostics}{59}{subsection.5.5.7}%
+\contentsline {paragraph}{Assumptions and their validity.}{59}{section*.97}%
+\contentsline {subsection}{\numberline {5.5.8}Experimental Results}{60}{subsection.5.5.8}%
+\contentsline {section}{\numberline {5.6}LSTM}{63}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Overview}{63}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Mathematical Formulation}{64}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}Architecture and Regularization}{65}{subsection.5.6.3}%
+\contentsline {subsection}{\numberline {5.6.4}Training Procedure}{66}{subsection.5.6.4}%
+\contentsline {subsection}{\numberline {5.6.5}Algorithm}{68}{subsection.5.6.5}%
+\contentsline {subsection}{\numberline {5.6.6}Post-estimation Diagnostics}{68}{subsection.5.6.6}%
+\contentsline {paragraph}{Assumptions and their validity.}{68}{section*.106}%
+\contentsline {subsection}{\numberline {5.6.7}Experimental Results}{70}{subsection.5.6.7}%
+\contentsline {chapter}{\numberline {6}Results and Discussion}{73}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Evaluation Protocol}{73}{section.6.1}%
+\contentsline {paragraph}{Input window.}{73}{section*.113}%
+\contentsline {section}{\numberline {6.2}Evaluation Metrics}{73}{section.6.2}%
+\contentsline {paragraph}{Mean Absolute Error (MAE, primary).}{74}{section*.114}%
+\contentsline {paragraph}{Root Mean Squared Error (RMSE).}{74}{section*.115}%
+\contentsline {paragraph}{Mean Absolute Percentage Error (MAPE).}{74}{section*.116}%
+\contentsline {paragraph}{Coefficient of Determination ($R^2$, per variable).}{74}{section*.117}%
+\contentsline {paragraph}{Reporting breakdowns.}{74}{section*.118}%
+\contentsline {paragraph}{Worked example.}{74}{section*.119}%
+\contentsline {paragraph}{Uncertainty.}{74}{section*.120}%
+\contentsline {section}{\numberline {6.3}Overall Comparison}{75}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Per-Variable Results}{75}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Per-Horizon Results}{76}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Statistical Significance}{77}{section.6.6}%
+\contentsline {paragraph}{Findings.}{78}{section*.128}%
+\contentsline {paragraph}{Per-variable confidence sets.}{79}{section*.129}%
+\contentsline {paragraph}{Caveat.}{79}{section*.130}%
+\contentsline {section}{\numberline {6.7}Discussion}{79}{section.6.7}%
+\contentsline {paragraph}{Most accurate overall.}{79}{section*.131}%
+\contentsline {paragraph}{Hardest variables.}{80}{section*.132}%
+\contentsline {paragraph}{Error vs.\ horizon.}{80}{section*.133}%
+\contentsline {paragraph}{Accuracy vs.\ cost.}{80}{section*.134}%
+\contentsline {paragraph}{What the diagnostics say.}{80}{section*.135}%
+\contentsline {chapter}{Bibliography}{82}{chapter*.136}%

@@ -45,3 +45,23 @@ def evaluate_metrics(y_test_real, ensemble_pred):
     df_var.to_csv(os.path.join(config.OUTPUT_DIR, 'per_variable_metrics.csv'), index=False)
     print("\n[BẢNG SAI SỐ CHI TIẾT TỪNG BIẾN - Kèm 95% CI]")
     print(df_var.to_string(index=False))
+
+    # --- per-horizon MAE/RMSE (mean over origins n and variables v, per lead time h) ---
+    H = y_test_real.shape[1]
+    horizon_rows = []
+    for h in range(H):
+        yt_h = y_test_real[:, h, :].flatten()
+        yp_h = ensemble_pred[:, h, :].flatten()
+        horizon_rows.append({
+            'horizon': h + 1,
+            'MAE': mean_absolute_error(yt_h, yp_h),
+            'RMSE': np.sqrt(mean_squared_error(yt_h, yp_h)),
+        })
+    df_h = pd.DataFrame(horizon_rows)
+    df_h.to_csv(os.path.join(config.OUTPUT_DIR, 'per_horizon_metrics.csv'), index=False)
+    print("\n[PER-HORIZON MAE/RMSE]")
+    print(df_h.to_string(index=False))
+
+    # save raw arrays so per-horizon / any future breakdown needs no retrain
+    np.save(os.path.join(config.OUTPUT_DIR, 'y_test_real.npy'), y_test_real)
+    np.save(os.path.join(config.OUTPUT_DIR, 'ensemble_pred.npy'), ensemble_pred)

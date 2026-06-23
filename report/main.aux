@@ -1,0 +1,401 @@
+\relax 
+\providecommand \babel@aux [2]{\global \let \babel@toc \@gobbletwo }
+\@nameuse{bbl@beforestart}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\babel@aux{english}{}
+\@writefile{toc}{\contentsline {chapter}{List of Figures}{iv}{chapter*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{List of Tables}{vii}{chapter*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:intro}{{1}{1}{Introduction}{chapter.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}Problem Motivation}{1}{section.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}Importance of Weather Forecasting}{1}{section.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}Research Objectives}{1}{section.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}Project Scope}{2}{section.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}Report Organisation}{2}{section.1.5}\protected@file@percent }
+\citation{openmeteo}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Dataset Description}{3}{chapter.2}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:dataset}{{2}{3}{Dataset Description}{chapter.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Data Source}{3}{section.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Data Collection Period}{3}{section.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Features Description}{3}{section.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces Dataset columns used in this study and their clean names.}}{4}{table.caption.4}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:features}{{2.1}{4}{Dataset columns used in this study and their clean names}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Target Variable Description}{4}{section.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Dataset Characteristics}{4}{section.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Exploratory Data Analysis (EDA)}{5}{chapter.3}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:eda}{{3}{5}{Exploratory Data Analysis (EDA)}{chapter.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Dataset Overview}{5}{section.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Dataset overview.}}{5}{table.caption.5}\protected@file@percent }
+\newlabel{tab:eda-overview}{{3.1}{5}{Dataset overview}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Statistical Summary}{5}{section.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Summary statistics for the seven targets (full 2021--2025 period, native units).}}{6}{table.caption.6}\protected@file@percent }
+\newlabel{tab:eda-stats}{{3.2}{6}{Summary statistics for the seven targets (full 2021--2025 period, native units)}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Distribution Analysis}{6}{section.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Marginal distributions of the seven targets.}}{7}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:eda-hist}{{3.1}{7}{Marginal distributions of the seven targets}{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Per-variable boxplots of the seven targets for outlier inspection.}}{8}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:eda-box}{{3.2}{8}{Per-variable boxplots of the seven targets for outlier inspection}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Wind rose: frequency of observations by direction (16 sectors), stacked by wind-speed band. Motivates decomposing the circular wind direction into the Cartesian targets \texttt  {wx}, \texttt  {wy}.}}{9}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:eda-windrose}{{3.3}{9}{Wind rose: frequency of observations by direction (16 sectors), stacked by wind-speed band. Motivates decomposing the circular wind direction into the Cartesian targets \texttt {wx}, \texttt {wy}}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Correlation Analysis}{9}{section.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Correlation matrix of the seven targets.}}{10}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:eda-corr}{{3.4}{10}{Correlation matrix of the seven targets}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Temporal Analysis}{10}{section.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Diurnal cycle (dominant).}{10}{section*.11}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Diurnal cycle per target: mean by hour of day ($\pm 1$ standard deviation), in real units.}}{11}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:eda-daily-cycle}{{3.5}{11}{Diurnal cycle per target: mean by hour of day ($\pm 1$ standard deviation), in real units}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{Weekly scale (no seasonality).}{11}{section*.13}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Day-of-week mean of each target ($\pm 1$ standard deviation). Every profile is flat within its own spread --- there is no weekly seasonality.}}{12}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:eda-daily-weekly}{{3.6}{12}{Day-of-week mean of each target ($\pm 1$ standard deviation). Every profile is flat within its own spread --- there is no weekly seasonality}{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {paragraph}{Annual cycle (context).}{12}{section*.15}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Weekly mean of temperature, humidity, and pressure over the full period (annual context).}}{13}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:eda-temporal}{{3.7}{13}{Weekly mean of temperature, humidity, and pressure over the full period (annual context)}{figure.caption.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{Putting it together: trend / seasonal / residual.}{13}{section*.17}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Additive decomposition (period $=24$\,h) of each target into trend, diurnal seasonal, and residual, over a 3-week window (2023). Note the small residual for \texttt  {temp}/\texttt  {dew}/\texttt  {pressure} versus the large residual for \texttt  {cloud} and \texttt  {wy}, and that \texttt  {dew}'s structure is almost all trend rather than diurnal.}}{14}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:eda-decomp-daily}{{3.8}{14}{Additive decomposition (period $=24$\,h) of each target into trend, diurnal seasonal, and residual, over a 3-week window (2023). Note the small residual for \texttt {temp}/\texttt {dew}/\texttt {pressure} versus the large residual for \texttt {cloud} and \texttt {wy}, and that \texttt {dew}'s structure is almost all trend rather than diurnal}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}Time-Series Structure}{15}{section.3.6}\protected@file@percent }
+\newlabel{sec:eda-tsstruct}{{3.6}{15}{Time-Series Structure}{section.3.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}Stationarity}{15}{subsection.3.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Augmented Dickey--Fuller (ADF).}{15}{section*.19}\protected@file@percent }
+\newlabel{eq:eda-adf}{{3.1}{15}{Augmented Dickey--Fuller (ADF)}{equation.3.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{KPSS.}{15}{section*.20}\protected@file@percent }
+\newlabel{eq:eda-kpss}{{3.2}{15}{KPSS}{equation.3.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{How the test is run.}{15}{section*.21}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Stationarity tests on the seven targets (full 2021--2025 series).}}{16}{table.caption.22}\protected@file@percent }
+\newlabel{tab:eda-adfkpss}{{3.3}{16}{Stationarity tests on the seven targets (full 2021--2025 series)}{table.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Rolling 30-day mean (blue) and standard deviation (red) of each target's daily series, in real units. The mean is flat apart from an annual wave (seasonality, not a unit-root trend) and the standard deviation is roughly constant --- consistent with stationarity.}}{17}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:eda-rolling}{{3.9}{17}{Rolling 30-day mean (blue) and standard deviation (red) of each target's daily series, in real units. The mean is flat apart from an annual wave (seasonality, not a unit-root trend) and the standard deviation is roughly constant --- consistent with stationarity}{figure.caption.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.2}Autocorrelation Structure}{17}{subsection.3.6.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces ACF (left) and PACF (right) of each target, lags $0$--$48$ hours.}}{18}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:eda-acfpacf}{{3.10}{18}{ACF (left) and PACF (right) of each target, lags $0$--$48$ hours}{figure.caption.24}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.3}Lagged Cross-Correlation}{19}{subsection.3.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Lagged cross-correlation $\mathrm  {corr}\big  (\mathrm  {row}(t),\,\mathrm  {col}(t-3\text  {h})\big  )$ among the seven targets.}}{19}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:eda-crosscorr}{{3.11}{19}{Lagged cross-correlation $\mathrm {corr}\big (\mathrm {row}(t),\,\mathrm {col}(t-3\text {h})\big )$ among the seven targets}{figure.caption.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Cross-correlation functions for the key target pairs over lags $k=-24\ldots  24$\,h, where $r(k)=\mathrm  {corr}(A_t,B_{t-k})$ and $k>0$ means $B$ leads $A$. Note \texttt  {temp}--\texttt  {rh}, flat at lag $0$ but peaking near $k=12$\,h.}}{20}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:eda-ccf}{{3.12}{20}{Cross-correlation functions for the key target pairs over lags $k=-24\ldots 24$\,h, where $r(k)=\mathrm {corr}(A_t,B_{t-k})$ and $k>0$ means $B$ leads $A$. Note \texttt {temp}--\texttt {rh}, flat at lag $0$ but peaking near $k=12$\,h}{figure.caption.26}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}Key Findings from EDA}{20}{section.3.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Data Preprocessing}{22}{chapter.4}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:preprocess}{{4}{22}{Data Preprocessing}{chapter.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Data Cleaning}{22}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Missing Value Handling}{22}{section.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Wind Decomposition}{22}{section.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Cyclical Time Encoding}{23}{section.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Feature Scaling}{23}{section.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Train/Validation/Test Split}{23}{section.4.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Chronological data split.}}{23}{table.caption.27}\protected@file@percent }
+\newlabel{tab:split}{{4.1}{23}{Chronological data split}{table.caption.27}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.7}Sliding-Window Generation}{23}{section.4.7}\protected@file@percent }
+\newlabel{sec:windows}{{4.7}{23}{Sliding-Window Generation}{section.4.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.8}Feature Engineering Overview}{24}{section.4.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Forecasting Models}{25}{chapter.5}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:models}{{5}{25}{Forecasting Models}{chapter.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Post-estimation Diagnostic Tests}{25}{section.5.1}\protected@file@percent }
+\newlabel{sec:diagnostics}{{5.1}{25}{Post-estimation Diagnostic Tests}{section.5.1}{}}
+\citation{hamilton1994time}
+\citation{hyndman2021fpp}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Post-estimation diagnostic tests, their hypotheses, and applicability.}}{26}{table.caption.28}\protected@file@percent }
+\newlabel{tab:diag-tests}{{5.1}{26}{Post-estimation diagnostic tests, their hypotheses, and applicability}{table.caption.28}{}}
+\@writefile{toc}{\contentsline {paragraph}{Augmented Dickey--Fuller (ADF).}{26}{section*.29}\protected@file@percent }
+\newlabel{eq:adf}{{5.1}{26}{Augmented Dickey--Fuller (ADF)}{equation.5.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{KPSS.}{26}{section*.30}\protected@file@percent }
+\newlabel{eq:kpss}{{5.2}{26}{KPSS}{equation.5.2}{}}
+\citation{lutkepohl2005var}
+\citation{box2015time}
+\citation{zeng2023dlinear}
+\@writefile{toc}{\contentsline {paragraph}{Stability (characteristic roots).}{27}{section*.31}\protected@file@percent }
+\newlabel{eq:stability}{{5.3}{27}{Stability (characteristic roots)}{equation.5.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Ljung--Box $Q$-test.}{27}{section*.32}\protected@file@percent }
+\newlabel{eq:ljungbox}{{5.4}{27}{Ljung--Box $Q$-test}{equation.5.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Jarque--Bera.}{27}{section*.33}\protected@file@percent }
+\newlabel{eq:jarquebera}{{5.5}{27}{Jarque--Bera}{equation.5.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}DLinear}{27}{section.5.2}\protected@file@percent }
+\newlabel{sec:dlinear}{{5.2}{27}{DLinear}{section.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Overview}{27}{subsection.5.2.1}\protected@file@percent }
+\citation{zeng2023dlinear}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Mathematical Formulation}{28}{subsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Series Decomposition}{28}{section*.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Why replication padding.}{29}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Dual Linear Projection}{29}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Combine and Project}{30}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Why Decomposition Helps}{30}{section*.38}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Decomposition of the first 48 hours of temperature (2021).}}{30}{table.caption.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Architecture and Forecasting Pipeline}{30}{subsection.5.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces DLinear architecture. The $120\times 11$ input window is split by a moving-average kernel ($k{=}25$, replication padding) into a trend $\mathbf  {T}$ and a seasonal residual $\mathbf  {S}$; each is mapped to the $24$-step horizon by its own linear layer, the two forecasts are summed, and a learned cross-channel projection $\mathbf  {W}_{\text  {proj}}\in \mathbb  {R}^{11\times 7}$ produces the final $24\times 7$ forecast. DLinear-S shares $(\mathbf  {W}_t,\mathbf  {W}_s)$ across channels; DLinear-I gives each channel its own pair.}}{31}{figure.caption.40}\protected@file@percent }
+\newlabel{fig:dlinear-arch}{{5.1}{31}{DLinear architecture. The $120\times 11$ input window is split by a moving-average kernel ($k{=}25$, replication padding) into a trend $\mathbf {T}$ and a seasonal residual $\mathbf {S}$; each is mapped to the $24$-step horizon by its own linear layer, the two forecasts are summed, and a learned cross-channel projection $\mathbf {W}_{\text {proj}}\in \mathbb {R}^{11\times 7}$ produces the final $24\times 7$ forecast. DLinear-S shares $(\mathbf {W}_t,\mathbf {W}_s)$ across channels; DLinear-I gives each channel its own pair}{figure.caption.40}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces DLinear end-to-end workflow: from raw hourly data to the rolling-origin forecast and its post-estimation diagnostics.}}{31}{figure.caption.41}\protected@file@percent }
+\newlabel{fig:dlinear-pipeline}{{5.2}{31}{DLinear end-to-end workflow: from raw hourly data to the rolling-origin forecast and its post-estimation diagnostics}{figure.caption.41}{}}
+\citation{kingma2015adam}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}Training Procedure}{32}{subsection.5.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces DLinear training hyperparameters.}}{32}{table.caption.42}\protected@file@percent }
+\newlabel{tab:dlinear-hparams}{{5.3}{32}{DLinear training hyperparameters}{table.caption.42}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.5}Algorithm}{33}{subsection.5.2.5}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces DLinear training and rolling-origin evaluation}}{33}{algorithm.1}\protected@file@percent }
+\newlabel{alg:dlinear}{{1}{33}{DLinear training and rolling-origin evaluation}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.6}Post-estimation Diagnostics}{33}{subsection.5.2.6}\protected@file@percent }
+\newlabel{sec:dlinear-diag}{{5.2.6}{33}{Post-estimation Diagnostics}{subsection.5.2.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Assumptions and their validity.}{33}{section*.43}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces DLinear post-estimation diagnostics (2025 test).}}{34}{table.caption.44}\protected@file@percent }
+\citation{zeng2023dlinear}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.7}Experimental Results}{35}{subsection.5.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Overall Performance}{35}{section*.45}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Overall test-set performance (2025, real scale, 3-seed ensemble).}}{35}{table.caption.46}\protected@file@percent }
+\newlabel{tab:dlinear-overall}{{5.5}{35}{Overall test-set performance (2025, real scale, 3-seed ensemble)}{table.caption.46}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Per-Variable Error}{35}{section*.47}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Per-variable MAE (real scale, 2025).}}{35}{table.caption.48}\protected@file@percent }
+\newlabel{tab:dlinear-pervar}{{5.6}{35}{Per-variable MAE (real scale, 2025)}{table.caption.48}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces DLinear: per-variable MAE for both variants (2025 test, log axis). Cloud cover dominates the error budget; DLinear-I edges out DLinear-S on every target.}}{36}{figure.caption.49}\protected@file@percent }
+\newlabel{fig:dlinear-pervar-plot}{{5.3}{36}{DLinear: per-variable MAE for both variants (2025 test, log axis). Cloud cover dominates the error budget; DLinear-I edges out DLinear-S on every target}{figure.caption.49}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Per-Horizon Error Growth}{36}{section*.50}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces Per-horizon MAE (DLinear-S, 2025 test).}}{36}{table.caption.51}\protected@file@percent }
+\citation{box2015time,hyndman2021fpp}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces DLinear: error accumulation over the 24-hour horizon (2025 test), both variants. Error roughly doubles from $h{=}1$ to $h{=}24$ and the two variants track each other closely.}}{37}{figure.caption.52}\protected@file@percent }
+\newlabel{fig:dlinear-horizon}{{5.4}{37}{DLinear: error accumulation over the 24-hour horizon (2025 test), both variants. Error roughly doubles from $h{=}1$ to $h{=}24$ and the two variants track each other closely}{figure.caption.52}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}SARIMA}{37}{section.5.3}\protected@file@percent }
+\newlabel{sec:sarima}{{5.3}{37}{SARIMA}{section.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Overview}{37}{subsection.5.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Mathematical Formulation}{38}{subsection.5.3.2}\protected@file@percent }
+\newlabel{eq:sarima}{{5.15}{38}{Mathematical Formulation}{equation.5.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.8}{\ignorespaces ARIMA-family members as special cases of Eq.~\eqref  {eq:sarima}.}}{38}{table.caption.53}\protected@file@percent }
+\newlabel{tab:arima-family}{{5.8}{38}{ARIMA-family members as special cases of Eq.~\eqref {eq:sarima}}{table.caption.53}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Model Identification and Selection}{38}{subsection.5.3.3}\protected@file@percent }
+\newlabel{sec:sarima-select}{{5.3.3}{38}{Model Identification and Selection}{subsection.5.3.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Step 1 --- Box--Jenkins identification from ACF/PACF.}{38}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Step 2 --- per-feature candidate grids.}{39}{section*.55}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.9}{\ignorespaces Per-feature candidate grids. Each row is one target's search space, bounded by its own ACF/PACF signature; seasonal period $s=24$ throughout, and $(0,0,0)$ denotes a non-seasonal candidate. Validation MAE picks the winner (Table~\ref {tab:sarima-selected}).}}{40}{table.caption.56}\protected@file@percent }
+\newlabel{tab:sarima-grid}{{5.9}{40}{Per-feature candidate grids. Each row is one target's search space, bounded by its own ACF/PACF signature; seasonal period $s=24$ throughout, and $(0,0,0)$ denotes a non-seasonal candidate. Validation MAE picks the winner (Table~\ref {tab:sarima-selected})}{table.caption.56}{}}
+\@writefile{toc}{\contentsline {paragraph}{Step 3 --- selection by validation MAE.}{40}{section*.57}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.10}{\ignorespaces Selected model per target (lowest 2024 validation MAE from each grid; $s=24$, $d=D=0$). All seven converged on the final 2021--2023 fit.}}{40}{table.caption.58}\protected@file@percent }
+\newlabel{tab:sarima-selected}{{5.10}{40}{Selected model per target (lowest 2024 validation MAE from each grid; $s=24$, $d=D=0$). All seven converged on the final 2021--2023 fit}{table.caption.58}{}}
+\@writefile{toc}{\contentsline {paragraph}{What the data chose.}{40}{section*.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Why daily ($s{=}24$) and not annual seasonality.}{41}{section*.60}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}Training Procedure}{41}{subsection.5.3.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.11}{\ignorespaces Training and evaluation settings (per-feature ARIMA-family pipeline).}}{42}{table.caption.61}\protected@file@percent }
+\newlabel{tab:sarima-hparams}{{5.11}{42}{Training and evaluation settings (per-feature ARIMA-family pipeline)}{table.caption.61}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.5}Forecasting Procedure}{42}{subsection.5.3.5}\protected@file@percent }
+\newlabel{sec:sarima-predict}{{5.3.5}{42}{Forecasting Procedure}{subsection.5.3.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces SARIMA workflow: seven univariate models are selected and saved once, then rolled over 2025 and stacked into the multivariate forecast block.}}{42}{figure.caption.62}\protected@file@percent }
+\newlabel{fig:sarima-pipeline}{{5.5}{42}{SARIMA workflow: seven univariate models are selected and saved once, then rolled over 2025 and stacked into the multivariate forecast block}{figure.caption.62}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces SARIMA selection and rolling-origin evaluation}}{43}{algorithm.2}\protected@file@percent }
+\newlabel{alg:sarima}{{2}{43}{SARIMA selection and rolling-origin evaluation}{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.6}Post-estimation Diagnostics}{43}{subsection.5.3.6}\protected@file@percent }
+\newlabel{sec:sarima-diag}{{5.3.6}{43}{Post-estimation Diagnostics}{subsection.5.3.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.12}{\ignorespaces Post-estimation diagnostics for the selected models (train fit / 2025 test).}}{43}{table.caption.63}\protected@file@percent }
+\newlabel{tab:sarima-diag}{{5.12}{43}{Post-estimation diagnostics for the selected models (train fit / 2025 test)}{table.caption.63}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.7}Experimental Results}{44}{subsection.5.3.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.13}{\ignorespaces SARIMA --- overall test metrics (real scale, 2025).}}{44}{table.caption.64}\protected@file@percent }
+\newlabel{tab:res-sarima}{{5.13}{44}{SARIMA --- overall test metrics (real scale, 2025)}{table.caption.64}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.14}{\ignorespaces SARIMA --- per-variable error (real scale, horizon-averaged, 2025).}}{44}{table.caption.65}\protected@file@percent }
+\newlabel{tab:sarima-pervar}{{5.14}{44}{SARIMA --- per-variable error (real scale, horizon-averaged, 2025)}{table.caption.65}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.15}{\ignorespaces SARIMA --- selected per-horizon MAE (2025 test).}}{44}{table.caption.66}\protected@file@percent }
+\newlabel{tab:sarima-horizon}{{5.15}{44}{SARIMA --- selected per-horizon MAE (2025 test)}{table.caption.66}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces SARIMA: error accumulation over the 24-hour horizon (2025 test).}}{45}{figure.caption.67}\protected@file@percent }
+\newlabel{fig:sarima-horizon}{{5.6}{45}{SARIMA: error accumulation over the 24-hour horizon (2025 test)}{figure.caption.67}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces SARIMA: MAE and RMSE by target variable (2025 test).}}{45}{figure.caption.68}\protected@file@percent }
+\newlabel{fig:sarima-pervar-plot}{{5.7}{45}{SARIMA: MAE and RMSE by target variable (2025 test)}{figure.caption.68}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces SARIMA: rolling 24-hour forecast vs.\ actual across all seven targets (2025 test year).}}{46}{figure.caption.69}\protected@file@percent }
+\newlabel{fig:sarima-allvars}{{5.8}{46}{SARIMA: rolling 24-hour forecast vs.\ actual across all seven targets (2025 test year)}{figure.caption.69}{}}
+\citation{lutkepohl2005var,hamilton1994time}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.9}{\ignorespaces SARIMA: rolling one-step \texttt  {temp} forecast vs.\ actual over the first two weeks of the 2025 test year (detail view).}}{47}{figure.caption.70}\protected@file@percent }
+\newlabel{fig:sarima-pva}{{5.9}{47}{SARIMA: rolling one-step \texttt {temp} forecast vs.\ actual over the first two weeks of the 2025 test year (detail view)}{figure.caption.70}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Vector Autoregression (VAR)}{47}{section.5.4}\protected@file@percent }
+\newlabel{sec:var}{{5.4}{47}{Vector Autoregression (VAR)}{section.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Overview}{47}{subsection.5.4.1}\protected@file@percent }
+\newlabel{sec:var-overview}{{5.4.1}{47}{Overview}{subsection.5.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Mathematical Formulation}{47}{subsection.5.4.2}\protected@file@percent }
+\newlabel{sec:var-theory}{{5.4.2}{47}{Mathematical Formulation}{subsection.5.4.2}{}}
+\newlabel{eq:var}{{5.16}{47}{Mathematical Formulation}{equation.5.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces VAR prediction structure. The lagged state vectors $\mathbf  {y}_{t-1},\dots  ,\mathbf  {y}_{t-p}$ (each a $7$-vector of \texttt  {temp,rh,dew,pressure,cloud,wx,wy}) are mapped through the coefficient matrices $\mathbf  {A}_1,\dots  ,\mathbf  {A}_p$ and summed with the intercept $\mathbf  {c}$ to give the one-step forecast $\hat  {\mathbf  {y}}_t$; the prediction is appended as the newest lag and the window rolled forward, repeated $24$ times for the full horizon.}}{48}{figure.caption.71}\protected@file@percent }
+\newlabel{fig:var-structure}{{5.10}{48}{VAR prediction structure. The lagged state vectors $\mathbf {y}_{t-1},\dots ,\mathbf {y}_{t-p}$ (each a $7$-vector of \texttt {temp,rh,dew,pressure,cloud,wx,wy}) are mapped through the coefficient matrices $\mathbf {A}_1,\dots ,\mathbf {A}_p$ and summed with the intercept $\mathbf {c}$ to give the one-step forecast $\hat {\mathbf {y}}_t$; the prediction is appended as the newest lag and the window rolled forward, repeated $24$ times for the full horizon}{figure.caption.71}{}}
+\@writefile{toc}{\contentsline {paragraph}{Estimation.}{48}{section*.72}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Lag-order selection.}{48}{section*.73}\protected@file@percent }
+\newlabel{eq:var-aic}{{5.17}{48}{Lag-order selection}{equation.5.17}{}}
+\@writefile{toc}{\contentsline {paragraph}{Stability and forecast intervals.}{48}{section*.74}\protected@file@percent }
+\newlabel{eq:var-fcse}{{5.18}{48}{Stability and forecast intervals}{equation.5.18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Model Specification and Training}{49}{subsection.5.4.3}\protected@file@percent }
+\newlabel{sec:var-train}{{5.4.3}{49}{Model Specification and Training}{subsection.5.4.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Stationarity and differencing order.}{49}{section*.75}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Lag order.}{49}{section*.76}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.16}{\ignorespaces VAR configuration.}}{49}{table.caption.77}\protected@file@percent }
+\newlabel{tab:var-config}{{5.16}{49}{VAR configuration}{table.caption.77}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.4}Forecasting Procedure}{49}{subsection.5.4.4}\protected@file@percent }
+\newlabel{sec:var-predict}{{5.4.4}{49}{Forecasting Procedure}{subsection.5.4.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.11}{\ignorespaces VAR modelling pipeline: from raw hourly data to the rolling-origin forecast and its diagnostics. The dashed arrow is the specification-check feedback --- re-select the lag order if residual autocorrelation remains.}}{50}{figure.caption.78}\protected@file@percent }
+\newlabel{fig:var-pipeline}{{5.11}{50}{VAR modelling pipeline: from raw hourly data to the rolling-origin forecast and its diagnostics. The dashed arrow is the specification-check feedback --- re-select the lag order if residual autocorrelation remains}{figure.caption.78}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces VAR fitting and rolling-origin evaluation}}{50}{algorithm.3}\protected@file@percent }
+\newlabel{alg:var}{{3}{50}{VAR fitting and rolling-origin evaluation}{algorithm.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.5}Post-estimation Diagnostics}{50}{subsection.5.4.5}\protected@file@percent }
+\newlabel{sec:var-diag}{{5.4.5}{50}{Post-estimation Diagnostics}{subsection.5.4.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Assumptions and their validity.}{50}{section*.79}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.17}{\ignorespaces VAR per-variable diagnostics (residuals of the fitted VAR(50), training set).}}{51}{table.caption.80}\protected@file@percent }
+\newlabel{tab:var-diag}{{5.17}{51}{VAR per-variable diagnostics (residuals of the fitted VAR(50), training set)}{table.caption.80}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.6}Experimental Results}{51}{subsection.5.4.6}\protected@file@percent }
+\newlabel{sec:var-results}{{5.4.6}{51}{Experimental Results}{subsection.5.4.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.18}{\ignorespaces VAR --- overall test metrics (real scale, 2025; $N=364$ origins, 95\% bootstrap CI).}}{52}{table.caption.81}\protected@file@percent }
+\newlabel{tab:var-overall}{{5.18}{52}{VAR --- overall test metrics (real scale, 2025; $N=364$ origins, 95\% bootstrap CI)}{table.caption.81}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.19}{\ignorespaces VAR --- per-variable error (real scale, horizon-averaged, 2025; $R^2$ vs.\ test mean).}}{52}{table.caption.82}\protected@file@percent }
+\newlabel{tab:var-pervar}{{5.19}{52}{VAR --- per-variable error (real scale, horizon-averaged, 2025; $R^2$ vs.\ test mean)}{table.caption.82}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.12}{\ignorespaces VAR: error accumulation over the 24-hour horizon (2025 test).}}{53}{figure.caption.83}\protected@file@percent }
+\newlabel{fig:var-horizon}{{5.12}{53}{VAR: error accumulation over the 24-hour horizon (2025 test)}{figure.caption.83}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.13}{\ignorespaces VAR: rolling 24-hour forecast vs.\ actual across the 2025 test year.}}{54}{figure.caption.84}\protected@file@percent }
+\newlabel{fig:var-pva}{{5.13}{54}{VAR: rolling 24-hour forecast vs.\ actual across the 2025 test year}{figure.caption.84}{}}
+\citation{chen2016xgboost}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.14}{\ignorespaces VAR: 24-hour \texttt  {temp} forecast at the first 2025 origin with 95\% analytic (Gaussian) and bootstrap (resampled-residual) intervals.}}{55}{figure.caption.85}\protected@file@percent }
+\newlabel{fig:var-interval}{{5.14}{55}{VAR: 24-hour \texttt {temp} forecast at the first 2025 origin with 95\% analytic (Gaussian) and bootstrap (resampled-residual) intervals}{figure.caption.85}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}XGBoost}{55}{section.5.5}\protected@file@percent }
+\newlabel{sec:xgboost}{{5.5}{55}{XGBoost}{section.5.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}Overview}{55}{subsection.5.5.1}\protected@file@percent }
+\newlabel{sec:xgb-overview}{{5.5.1}{55}{Overview}{subsection.5.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}Mathematical Formulation}{55}{subsection.5.5.2}\protected@file@percent }
+\newlabel{sec:xgb-theory}{{5.5.2}{55}{Mathematical Formulation}{subsection.5.5.2}{}}
+\newlabel{eq:xgb-obj}{{5.19}{56}{Mathematical Formulation}{equation.5.19}{}}
+\newlabel{eq:xgb-taylor}{{5.20}{56}{Mathematical Formulation}{equation.5.20}{}}
+\newlabel{eq:xgb-grads}{{5.21}{56}{Mathematical Formulation}{equation.5.21}{}}
+\newlabel{eq:xgb-leaf}{{5.22}{56}{Mathematical Formulation}{equation.5.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}Feature Engineering}{56}{subsection.5.5.3}\protected@file@percent }
+\newlabel{sec:xgb-fe}{{5.5.3}{56}{Feature Engineering}{subsection.5.5.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Lag Features}{56}{section*.86}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Rolling Mean Features}{57}{section*.87}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Rolling Standard-Deviation Features}{57}{section*.88}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Rolling Min/Max (Range) Features}{57}{section*.89}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Time-based Features}{57}{section*.90}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.4}Training Procedure}{57}{subsection.5.5.4}\protected@file@percent }
+\newlabel{sec:xgb-train}{{5.5.4}{57}{Training Procedure}{subsection.5.5.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{One regressor per target.}{57}{section*.91}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Data usage and windows.}{57}{section*.92}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Validation and early stopping.}{58}{section*.93}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Determinism.}{58}{section*.94}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.20}{\ignorespaces XGBoost hyperparameters (fixed a priori; trees chosen by early stopping).}}{58}{table.caption.95}\protected@file@percent }
+\newlabel{tab:xgb-hparams}{{5.20}{58}{XGBoost hyperparameters (fixed a priori; trees chosen by early stopping)}{table.caption.95}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.5}Forecasting Procedure}{58}{subsection.5.5.5}\protected@file@percent }
+\newlabel{sec:xgb-predict}{{5.5.5}{58}{Forecasting Procedure}{subsection.5.5.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.15}{\ignorespaces XGBoost prediction structure. The $120\times 11$ window is encoded into $144$ engineered features feeding seven independent gradient-boosted tree ensembles (one per target), each an additive model $\DOTSB \sum@ \slimits@ _k f_k$; their $24$-step outputs are stacked into the $24\times 7$ forecast block.}}{59}{figure.caption.96}\protected@file@percent }
+\newlabel{fig:xgb-structure}{{5.15}{59}{XGBoost prediction structure. The $120\times 11$ window is encoded into $144$ engineered features feeding seven independent gradient-boosted tree ensembles (one per target), each an additive model $\sum _k f_k$; their $24$-step outputs are stacked into the $24\times 7$ forecast block}{figure.caption.96}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.6}Algorithm}{59}{subsection.5.5.6}\protected@file@percent }
+\newlabel{sec:xgb-algo}{{5.5.6}{59}{Algorithm}{subsection.5.5.6}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {4}{\ignorespaces XGBoost direct multi-horizon forecasting (training + rolling evaluation)}}{59}{algorithm.4}\protected@file@percent }
+\newlabel{alg:xgb}{{4}{59}{XGBoost direct multi-horizon forecasting (training + rolling evaluation)}{algorithm.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.7}Post-estimation Diagnostics}{59}{subsection.5.5.7}\protected@file@percent }
+\newlabel{sec:xgb-diag}{{5.5.7}{59}{Post-estimation Diagnostics}{subsection.5.5.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Assumptions and their validity.}{59}{section*.97}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.21}{\ignorespaces XGBoost post-estimation diagnostics (1-step validation residuals, seed~0).}}{60}{table.caption.98}\protected@file@percent }
+\newlabel{tab:xgb-diag}{{5.21}{60}{XGBoost post-estimation diagnostics (1-step validation residuals, seed~0)}{table.caption.98}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.8}Experimental Results}{60}{subsection.5.5.8}\protected@file@percent }
+\newlabel{sec:xgb-results}{{5.5.8}{60}{Experimental Results}{subsection.5.5.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.22}{\ignorespaces XGBoost --- overall test metrics (real scale, 2025; seed ensemble $\{0,1,2\}$).}}{61}{table.caption.99}\protected@file@percent }
+\newlabel{tab:xgb-overall}{{5.22}{61}{XGBoost --- overall test metrics (real scale, 2025; seed ensemble $\{0,1,2\}$)}{table.caption.99}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.23}{\ignorespaces XGBoost --- per-variable error (real scale, horizon-averaged, 2025).}}{61}{table.caption.100}\protected@file@percent }
+\newlabel{tab:xgb-pervar}{{5.23}{61}{XGBoost --- per-variable error (real scale, horizon-averaged, 2025)}{table.caption.100}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.16}{\ignorespaces XGBoost: error accumulation over the 24-hour horizon (2025 test).}}{61}{figure.caption.101}\protected@file@percent }
+\newlabel{fig:xgb-horizon}{{5.16}{61}{XGBoost: error accumulation over the 24-hour horizon (2025 test)}{figure.caption.101}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.17}{\ignorespaces XGBoost: validation-RMSE learning curves (seed 0), one curve per target.}}{62}{figure.caption.102}\protected@file@percent }
+\newlabel{fig:xgb-learn}{{5.17}{62}{XGBoost: validation-RMSE learning curves (seed 0), one curve per target}{figure.caption.102}{}}
+\citation{hochreiter1997lstm}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.18}{\ignorespaces XGBoost: rolling 24-hour forecast vs.\ actual, first 10 days of 2025.}}{63}{figure.caption.103}\protected@file@percent }
+\newlabel{fig:xgb-pva}{{5.18}{63}{XGBoost: rolling 24-hour forecast vs.\ actual, first 10 days of 2025}{figure.caption.103}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}LSTM}{63}{section.5.6}\protected@file@percent }
+\newlabel{sec:lstm}{{5.6}{63}{LSTM}{section.5.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.1}Overview}{63}{subsection.5.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.2}Mathematical Formulation}{64}{subsection.5.6.2}\protected@file@percent }
+\newlabel{eq:lstm_forget}{{5.23}{64}{Mathematical Formulation}{equation.5.23}{}}
+\newlabel{eq:lstm_input}{{5.24}{64}{Mathematical Formulation}{equation.5.24}{}}
+\newlabel{eq:lstm_candidate}{{5.25}{64}{Mathematical Formulation}{equation.5.25}{}}
+\newlabel{eq:lstm_output}{{5.26}{64}{Mathematical Formulation}{equation.5.26}{}}
+\newlabel{eq:lstm_cell_update}{{5.27}{65}{Mathematical Formulation}{equation.5.27}{}}
+\newlabel{eq:lstm_hidden_update}{{5.28}{65}{Mathematical Formulation}{equation.5.28}{}}
+\newlabel{eq:dense_1}{{5.29}{65}{Mathematical Formulation}{equation.5.29}{}}
+\newlabel{eq:dense_2}{{5.30}{65}{Mathematical Formulation}{equation.5.30}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.3}Architecture and Regularization}{65}{subsection.5.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.19}{\ignorespaces LSTM architecture. An encoder LSTM consumes the $120\times 12$ window and emits its final hidden state $h_{120}$; dropout regularises it, and two dense layers (ReLU then linear) project to the $168$-node output reshaped to the $24\times 7$ forecast block.}}{66}{figure.caption.104}\protected@file@percent }
+\newlabel{fig:lstm-arch}{{5.19}{66}{LSTM architecture. An encoder LSTM consumes the $120\times 12$ window and emits its final hidden state $h_{120}$; dropout regularises it, and two dense layers (ReLU then linear) project to the $168$-node output reshaped to the $24\times 7$ forecast block}{figure.caption.104}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.4}Training Procedure}{66}{subsection.5.6.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.24}{\ignorespaces LSTM Hyperparameter Configuration and Tuning Details.}}{67}{table.caption.105}\protected@file@percent }
+\newlabel{tab:lstm_hyperparams}{{5.24}{67}{LSTM Hyperparameter Configuration and Tuning Details}{table.caption.105}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.5}Algorithm}{68}{subsection.5.6.5}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {5}{\ignorespaces LSTM Direct Multi-horizon Forecasting (Tuning \& Evaluation)}}{68}{algorithm.5}\protected@file@percent }
+\newlabel{alg:lstm}{{5}{68}{LSTM Direct Multi-horizon Forecasting (Tuning \& Evaluation)}{algorithm.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.6}Post-estimation Diagnostics}{68}{subsection.5.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Assumptions and their validity.}{68}{section*.106}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.25}{\ignorespaces Ljung-Box Residual Diagnostic Results}}{69}{table.caption.107}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.20}{\ignorespaces LSTM: pooled one-step ($h{=}1$) residual distribution. The histogram is sharply peaked at zero with long tails (leptokurtic / heavy-tailed) relative to the Gaussian-like reference curve, departing from normality and consistent with the Jarque--Bera rejection seen across the models.}}{70}{figure.caption.108}\protected@file@percent }
+\newlabel{fig:lstm-resid}{{5.20}{70}{LSTM: pooled one-step ($h{=}1$) residual distribution. The histogram is sharply peaked at zero with long tails (leptokurtic / heavy-tailed) relative to the Gaussian-like reference curve, departing from normality and consistent with the Jarque--Bera rejection seen across the models}{figure.caption.108}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.7}Experimental Results}{70}{subsection.5.6.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.26}{\ignorespaces LSTM Overall Test Metrics (Real Scale, 2025; Ensemble Mean).}}{70}{table.caption.109}\protected@file@percent }
+\newlabel{tab:lstm_overall_metrics}{{5.26}{70}{LSTM Overall Test Metrics (Real Scale, 2025; Ensemble Mean)}{table.caption.109}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.27}{\ignorespaces Per-Variable Metrics with Bootstrap 95\% CI on MAE and RMSE.}}{71}{table.caption.110}\protected@file@percent }
+\newlabel{tab:lstm_per_var}{{5.27}{71}{Per-Variable Metrics with Bootstrap 95\% CI on MAE and RMSE}{table.caption.110}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.21}{\ignorespaces LSTM: Error accumulation over the 24-hour horizon (Ensemble Mean, 2025 test).}}{71}{figure.caption.111}\protected@file@percent }
+\newlabel{fig:lstm_horizon}{{5.21}{71}{LSTM: Error accumulation over the 24-hour horizon (Ensemble Mean, 2025 test)}{figure.caption.111}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.22}{\ignorespaces LSTM: Rolling 24-hour forecast vs. actual real-world data across all targets.}}{72}{figure.caption.112}\protected@file@percent }
+\newlabel{fig:lstm_actual_pred}{{5.22}{72}{LSTM: Rolling 24-hour forecast vs. actual real-world data across all targets}{figure.caption.112}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Results and Discussion}{73}{chapter.6}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:results}{{6}{73}{Results and Discussion}{chapter.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Evaluation Protocol}{73}{section.6.1}\protected@file@percent }
+\newlabel{sec:eval-protocol}{{6.1}{73}{Evaluation Protocol}{section.6.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Input window.}{73}{section*.113}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Evaluation Metrics}{73}{section.6.2}\protected@file@percent }
+\newlabel{sec:metrics}{{6.2}{73}{Evaluation Metrics}{section.6.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Mean Absolute Error (MAE, primary).}{74}{section*.114}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Root Mean Squared Error (RMSE).}{74}{section*.115}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Mean Absolute Percentage Error (MAPE).}{74}{section*.116}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Coefficient of Determination ($R^2$, per variable).}{74}{section*.117}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Reporting breakdowns.}{74}{section*.118}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Worked example.}{74}{section*.119}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Uncertainty.}{74}{section*.120}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Overall Comparison}{75}{section.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.1}{\ignorespaces Overall test performance (real scale, 2025 rolling-origin).}}{75}{table.caption.121}\protected@file@percent }
+\newlabel{tab:overall}{{6.1}{75}{Overall test performance (real scale, 2025 rolling-origin)}{table.caption.121}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Per-Variable Results}{75}{section.6.4}\protected@file@percent }
+\newlabel{sec:per-var-results}{{6.4}{75}{Per-Variable Results}{section.6.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6.2}{\ignorespaces Per-variable MAE by model (real scale).}}{75}{table.caption.122}\protected@file@percent }
+\newlabel{tab:per-variable}{{6.2}{75}{Per-variable MAE by model (real scale)}{table.caption.122}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.5}Per-Horizon Results}{76}{section.6.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.1}{\ignorespaces Per-horizon MAE by model over the 24-hour horizon (2025 test). The cheap models lead at $h{=}1$; the LSTM overtakes from $h{=}4$ and is best at the long leads.}}{76}{figure.caption.123}\protected@file@percent }
+\newlabel{fig:compare-horizon}{{6.1}{76}{Per-horizon MAE by model over the 24-hour horizon (2025 test). The cheap models lead at $h{=}1$; the LSTM overtakes from $h{=}4$ and is best at the long leads}{figure.caption.123}{}}
+\citation{diebold1995comparing}
+\@writefile{lot}{\contentsline {table}{\numberline {6.3}{\ignorespaces Per-horizon MAE at selected lead times (real scale, 2025). Best per column in bold.}}{77}{table.caption.124}\protected@file@percent }
+\newlabel{tab:per-horizon}{{6.3}{77}{Per-horizon MAE at selected lead times (real scale, 2025). Best per column in bold}{table.caption.124}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.6}Statistical Significance}{77}{section.6.6}\protected@file@percent }
+\newlabel{sec:significance}{{6.6}{77}{Statistical Significance}{section.6.6}{}}
+\citation{hansen2011mcs}
+\newlabel{eq:dm}{{6.3}{78}{Diebold--Mariano test (pairwise)}{equation.6.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6.4}{\ignorespaces Forecast-accuracy significance on the overall (unit-standardised) loss. DM statistics are paired vs.\ the best model (LSTM) and vs.\ the univariate baseline (SARIMA); $p$-values are Holm-corrected for multiple comparisons. The $90\%$ Model Confidence Set contains every model not significantly worse than the best.}}{78}{table.caption.127}\protected@file@percent }
+\newlabel{tab:significance}{{6.4}{78}{Forecast-accuracy significance on the overall (unit-standardised) loss. DM statistics are paired vs.\ the best model (LSTM) and vs.\ the univariate baseline (SARIMA); $p$-values are Holm-corrected for multiple comparisons. The $90\%$ Model Confidence Set contains every model not significantly worse than the best}{table.caption.127}{}}
+\@writefile{toc}{\contentsline {paragraph}{Findings.}{78}{section*.128}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Per-variable confidence sets.}{79}{section*.129}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Caveat.}{79}{section*.130}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.7}Discussion}{79}{section.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Most accurate overall.}{79}{section*.131}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Hardest variables.}{80}{section*.132}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Error vs.\ horizon.}{80}{section*.133}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Accuracy vs.\ cost.}{80}{section*.134}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What the diagnostics say.}{80}{section*.135}\protected@file@percent }
+\bibstyle{plainnat}
+\bibdata{references}
+\bibcite{box2015time}{{1}{2015}{{Box et~al.}}{{Box, Jenkins, Reinsel, and Ljung}}}
+\bibcite{chen2016xgboost}{{2}{2016}{{Chen and Guestrin}}{{}}}
+\bibcite{diebold1995comparing}{{3}{1995}{{Diebold and Mariano}}{{}}}
+\bibcite{hamilton1994time}{{4}{1994}{{Hamilton}}{{}}}
+\bibcite{hansen2011mcs}{{5}{2011}{{Hansen et~al.}}{{Hansen, Lunde, and Nason}}}
+\bibcite{hochreiter1997lstm}{{6}{1997}{{Hochreiter and Schmidhuber}}{{}}}
+\bibcite{hyndman2021fpp}{{7}{2021}{{Hyndman and Athanasopoulos}}{{}}}
+\bibcite{kingma2015adam}{{8}{2015}{{Kingma and Ba}}{{}}}
+\bibcite{lutkepohl2005var}{{9}{2005}{{L{\"u}tkepohl}}{{}}}
+\bibcite{openmeteo}{{10}{2024}{{Open-Meteo}}{{}}}
+\bibcite{zeng2023dlinear}{{11}{2023}{{Zeng et~al.}}{{Zeng, Chen, Zhang, and Xu}}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{82}{chapter*.136}\protected@file@percent }
+\gdef \@abspage@last{91}

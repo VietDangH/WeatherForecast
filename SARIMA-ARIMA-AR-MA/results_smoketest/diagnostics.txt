@@ -1,0 +1,43 @@
+Per-feature ARIMA-family diagnostics
+====================================
+
+Each target is modelled by an independent univariate model whose family
+(AR / MA / ARMA / ARIMA / SARIMA) is chosen per variable by validation MAE
+from that variable's own candidate grid. Seasonal period s = 24 (daily).
+Fit scope: 2021-2023
+Targets are combined into a 24 x 7 forecast block.
+
+Selected model per target
+-------------------------
+variable family     order seasonal_order  validation_mae  validation_rmse  final_converged
+    temp     AR (1, 0, 0)   (0, 0, 0, 0)        2.523561         3.298383             True
+      rh     AR (1, 0, 0)   (0, 0, 0, 0)        9.798748        12.856877             True
+     dew     AR (1, 0, 0)   (0, 0, 0, 0)        1.443833         2.055610             True
+pressure     AR (1, 0, 0)   (0, 0, 0, 0)        1.841341         2.636290             True
+   cloud     AR (1, 0, 0)   (0, 0, 0, 0)       28.548978        32.828494             True
+      wx     AR (1, 0, 0)   (0, 0, 0, 0)        5.456044         6.874790             True
+      wy     AR (1, 0, 0)   (0, 0, 0, 0)        3.179971         4.292697             True
+
+ADF stationarity on train only
+------------------------------
+For ADF, p < 0.05 rejects the unit-root null (treated as stationary).
+variable   adf_stat      p_value  used_lag  nobs  stationary_at_0_05
+    temp  -6.526288 1.012708e-08        49 26230                True
+      rh -12.503263 2.776245e-23        49 26230                True
+     dew  -6.995515 7.551665e-10        49 26230                True
+pressure  -7.225294 2.060616e-10        49 26230                True
+   cloud -14.716501 2.794631e-27        49 26230                True
+      wx -13.190987 1.144228e-24        49 26230                True
+      wy -13.910895 5.513095e-26        49 26230                True
+
+Post-fit diagnostics
+--------------------
+For Ljung-Box and Jarque-Bera, p > 0.05 is treated as good.
+variable           aic           bic  converged  ljung_box_lag  ljung_box_stat  ljung_box_p_value  ljung_box_good_at_0_05  jarque_bera_stat  jarque_bera_p_value  residual_normality_good_at_0_05  residual_skew  residual_kurtosis
+    temp  65863.103588  65887.633279       True             24    72597.555549       0.000000e+00                   False      9.443380e+03                  0.0                            False      -0.104544           5.929227
+      rh 148178.703777 148203.233468       True             24    38612.035818       0.000000e+00                   False      1.284621e+04                  0.0                            False       0.310007           6.368572
+     dew  42314.788232  42339.317922       True             24     2806.111737       0.000000e+00                   False      2.845442e+05                  0.0                            False      -0.125514          19.118147
+pressure  53676.484631  53701.014321       True             24       16.686904       8.617048e-01                    True      7.229377e+11                  0.0                            False     159.399881       25695.711078
+   cloud 228991.729977 229016.259668       True             24      632.383622      3.919847e-118                   False      3.726953e+04                  0.0                            False      -0.256343           8.811476
+      wx 119933.911478 119958.441168       True             24     1928.990306       0.000000e+00                   False      4.444944e+04                  0.0                            False       0.298562           9.343227
+      wy 114578.218746 114602.748436       True             24      885.889867      1.415946e-171                   False      2.887901e+04                  0.0                            False       0.153454           8.126338

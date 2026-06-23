@@ -1,0 +1,8 @@
+variable,family,order,seasonal_order,label,selected_by,validation_mae,validation_rmse,successful_candidates,total_candidates,final_fit_rows,final_aic,final_bic,final_converged,trend,enforce_stationarity,enforce_invertibility,model_path
+temp,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,2.523560698500192,3.298382976124448,1,1,26280,65863.10358840154,65887.63327881934,True,c,False,False,models/temp.pkl
+rh,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,9.798747858687111,12.856876796524233,1,1,26280,148178.70377711635,148203.23346753413,True,c,False,False,models/rh.pkl
+dew,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,1.4438328148824546,2.0556101415535064,1,1,26280,42314.788231865736,42339.31792228353,True,c,False,False,models/dew.pkl
+pressure,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,1.8413412336334927,2.6362903523916597,1,1,26280,53676.48463058941,53701.014321007206,True,c,True,True,models/pressure.pkl
+cloud,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,28.548977724272902,32.82849377736965,1,1,26280,228991.7299773562,229016.259667774,True,c,False,False,models/cloud.pkl
+wx,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,5.456043576365929,6.874790140741455,1,1,26280,119933.9114777394,119958.4411681572,True,c,False,False,models/wx.pkl
+wy,AR,"(1, 0, 0)","(0, 0, 0, 0)","AR(1, 0, 0)",validation_mae,3.1799714780796915,4.2926973877745445,1,1,26280,114578.21874578689,114602.74843620468,True,c,False,False,models/wy.pkl

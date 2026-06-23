@@ -1,0 +1,8 @@
+variable,family,order,seasonal_order,label,selected_by,validation_mae,validation_rmse,successful_candidates,total_candidates,final_fit_rows,final_aic,final_bic,final_converged,model_path
+temp,SARMA,"(3, 0, 1)","(1, 0, 1, 24)","SARMA(3, 0, 1)x(1, 0, 1, 24)",validation_mae,1.370229258221327,1.9332305593206744,4,4,26280,42928.12550204993,42993.53800983072,True,models/temp.pkl
+rh,SARMA,"(1, 0, 1)","(1, 0, 1, 24)","SARMA(1, 0, 1)x(1, 0, 1, 24)",validation_mae,5.792151448423769,7.854852770283391,4,4,26280,133743.4980595449,133792.55744038048,True,models/rh.pkl
+dew,SARMA,"(2, 0, 1)","(1, 0, 1, 24)","SARMA(2, 0, 1)x(1, 0, 1, 24)",validation_mae,1.1332800905182394,1.7195507804464079,4,4,26280,38800.11602644142,38857.35197074961,True,models/dew.pkl
+pressure,SARMA,"(1, 0, 1)","(1, 0, 1, 24)","SARMA(1, 0, 1)x(1, 0, 1, 24)",validation_mae,1.1844460898032239,1.7544436073745737,4,4,26280,8894.877824631503,8943.937205467095,True,models/pressure.pkl
+cloud,SARMA,"(2, 0, 1)","(0, 0, 1, 24)","SARMA(2, 0, 1)x(0, 0, 1, 24)",validation_mae,23.581862696899133,30.176818363806373,4,4,26280,228480.22094509655,228529.28032593214,True,models/cloud.pkl
+wx,SARMA,"(2, 0, 1)","(1, 0, 1, 24)","SARMA(2, 0, 1)x(1, 0, 1, 24)",validation_mae,4.558902386912745,5.887223916871056,4,4,26280,118437.54809127311,118494.78403558131,True,models/wx.pkl
+wy,SARMA,"(2, 0, 1)","(0, 0, 1, 24)","SARMA(2, 0, 1)x(0, 0, 1, 24)",validation_mae,3.133113566206827,4.294716312569039,4,4,26280,114476.78612667616,114525.84550751175,True,models/wy.pkl

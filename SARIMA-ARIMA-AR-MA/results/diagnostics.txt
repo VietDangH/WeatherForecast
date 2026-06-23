@@ -1,0 +1,38 @@
+Per-feature ARIMA-family diagnostics
+====================================
+
+Family chosen per variable by validation MAE from its own grid. Seasonal s=24 (daily).
+Fit scope: 2021-2023
+
+Selected model per target
+-------------------------
+variable family     order seasonal_order  validation_mae  validation_rmse  final_converged
+    temp  SARMA (3, 0, 1)  (1, 0, 1, 24)        1.370229         1.933231             True
+      rh  SARMA (1, 0, 1)  (1, 0, 1, 24)        5.792151         7.854853             True
+     dew  SARMA (2, 0, 1)  (1, 0, 1, 24)        1.133280         1.719551             True
+pressure  SARMA (1, 0, 1)  (1, 0, 1, 24)        1.184446         1.754444             True
+   cloud  SARMA (2, 0, 1)  (0, 0, 1, 24)       23.581863        30.176818             True
+      wx  SARMA (2, 0, 1)  (1, 0, 1, 24)        4.558902         5.887224             True
+      wy  SARMA (2, 0, 1)  (0, 0, 1, 24)        3.133114         4.294716             True
+
+ADF stationarity on train (p<0.05 => stationary)
+-----------------------------------------------
+variable   adf_stat      p_value  used_lag  nobs  stationary_at_0_05
+    temp  -6.526288 1.012708e-08        49 26230                True
+      rh -12.503263 2.776245e-23        49 26230                True
+     dew  -6.995515 7.551665e-10        49 26230                True
+pressure  -7.225294 2.060616e-10        49 26230                True
+   cloud -14.716501 2.794631e-27        49 26230                True
+      wx -13.190987 1.144228e-24        49 26230                True
+      wy -13.910895 5.513095e-26        49 26230                True
+
+Post-fit diagnostics (Ljung-Box/Jarque-Bera: p>0.05 is good)
+-----------------------------------------------------------
+variable           aic           bic  converged  ljung_box_lag  ljung_box_stat  ljung_box_p_value  ljung_box_good_at_0_05  jarque_bera_stat  jarque_bera_p_value  residual_normality_good_at_0_05  residual_skew  residual_kurtosis
+    temp  42928.125502  42993.538010       True             24      895.457703      1.332352e-173                   False      3.484402e+05                  0.0                            False      -1.248193          20.662908
+      rh 133743.498060 133792.557440       True             24      855.346716      4.132265e-165                   False      8.424804e+04                  0.0                            False       0.517054          11.710308
+     dew  38800.116026  38857.351971       True             24      498.786875       2.977784e-90                   False      2.749219e+05                  0.0                            False      -0.612829          18.797722
+pressure   8894.877825   8943.937205       True             24     6561.308078       0.000000e+00                   False      1.882056e+11                  0.0                            False       0.180180       13113.198218
+   cloud 228480.220945 228529.280326       True             24      174.458799       8.329745e-25                   False      3.387520e+04                  0.0                            False      -0.182501           8.550048
+      wx 118437.548091 118494.784036       True             24      405.602154       5.312748e-71                   False      5.820484e+04                  0.0                            False       0.406401          10.245306
+      wy 114476.786127 114525.845508       True             24      359.997468       1.152318e-61                   False      3.273426e+04                  0.0                            False       0.130702           8.461316

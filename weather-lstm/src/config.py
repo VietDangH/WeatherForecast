@@ -12,9 +12,7 @@ PLOTS_DIR = os.path.join(OUTPUT_DIR, 'plots')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
-FILE_NAME = 'weather_dataset.csv'
-
-FEATURES = ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy', 'hour_sin', 'hour_cos', 'day_sin', 'day_cos']
+FEATURES =['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy', 'hour_sin', 'hour_cos', 'day_sin', 'day_cos']
 TARGETS = ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
 
 LOOKBACK = 120
