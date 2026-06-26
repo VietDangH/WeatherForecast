@@ -213,7 +213,7 @@
   \begin{flushleft}
     \large
     \textbf{Course:} IT2022E - Applied Statistics and Experimental Design \\[0.2cm]
-    \textbf{Group Members:} 
+    \textbf{Group:} 12 
   \end{flushleft}
 
   % Giảm khoảng cách dòng trong bảng từ 1.5 xuống 1.25 để tiết kiệm không gian
@@ -298,8 +298,8 @@ protocol and metrics, then reports and discusses the results.
 \label{ch:dataset}
 
 \section{Data Source}
-The dataset is an hourly weather export in the Open-Meteo style
-\citep{openmeteo}, stored as \texttt{weather\_dataset.csv}. % TODO: confirm the
+The dataset is an hourly weather dataset obtained from the Open-Meteo API
+\citep{openmeteo} for Noi Bai International Airport (Hanoi, Vietnam), stored as \texttt{weather\_dataset.csv}. % TODO: confirm the
 % exact provider, station/location, and licensing for the final report.
 
 \section{Data Collection Period}
@@ -824,14 +824,6 @@ an input lookback of $L = 120$ hours predicts the next $H = 24$ hours,
 \]
 Forecasts only ever condition on observations strictly before the target window,
 preventing leakage.
-
-\section{Feature Engineering Overview}
-Tree models cannot exploit a raw flattened window effectively, so each
-$(120, d_{\text{in}})$ window is summarised into a compact feature vector
-(recent lags and rolling statistics per channel). Every engineered feature is a
-function of the 120-hour history up to the origin, preserving the same
-no-leakage horizon as the raw window. The full construction is detailed in
-Section~\ref{sec:xgb-fe}.
 
 %==============================================================================
 \chapter{Forecasting Models}
