@@ -18,7 +18,7 @@ CHECKPOINT_DIR = os.path.join(_DLIN_DIR, "checkpoints")
 CHECKPOINT_DIR_I = os.path.join(_DLIN_DIR, "checkpoints_i")
 
 # -- DATA_PATH -------------------------------------------
-DATA_PATH = os.path.join(os.path.dirname(_DLIN_DIR), "weather_dataset.csv")
+DATA_PATH = os.path.join(os.path.dirname(_DLIN_DIR), "data", "weather_dataset.csv")
 
 # -- Protocol: Target variables (7) ----------------------
 # temp, rh, dew, pressure, cloud, wx, wy

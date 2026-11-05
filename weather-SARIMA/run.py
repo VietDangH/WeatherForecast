@@ -25,7 +25,7 @@ from pathlib import Path
 import pandas as pd
 
 THIS_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(THIS_DIR))
+sys.path.insert(0, str(THIS_DIR / "src"))
 
 from config import (  # noqa: E402
     DEFAULT_BOOTSTRAP_SAMPLES,

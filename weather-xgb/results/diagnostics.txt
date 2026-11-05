@@ -10,19 +10,19 @@ Input set   : 7 weather features ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx'
                protocol's 12; agree the shared input set across the group.)
               Window encoded as recent lags + rolling stats per channel.
 Targets (7) : ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
-Seed        : 0   |   XGB: {'objective': 'reg:squarederror', 'eval_metric': 'rmse', 'tree_method': 'hist', 'n_estimators': 400, 'learning_rate': 0.08, 'max_depth': 6, 'subsample': 0.8, 'colsample_bytree': 0.6, 'min_child_weight': 5.0, 'reg_lambda': 1.0, 'n_jobs': -1}
+Seed        : 0   |   XGB: {'objective': 'reg:squarederror', 'eval_metric': 'rmse', 'tree_method': 'hist', 'n_estimators': 120, 'learning_rate': 0.08, 'max_depth': 6, 'subsample': 0.8, 'colsample_bytree': 0.6, 'min_child_weight': 5.0, 'reg_lambda': 1.0, 'n_jobs': -1}
 
 ------------------------------------------------------------------------
 1. Convergence / no-divergence  (val-RMSE learning curves, scaled)
 ------------------------------------------------------------------------
 var        best_iter    val_rmse  train_rmse   fit_s
-temp             106      0.2594      0.1128    36.0
-rh               119      0.4800      0.2143    38.7
-dew              147      0.2414      0.0786    44.8
-pressure          75      0.2365      0.1057    29.0
-cloud             39      0.7895      0.5670    18.0
-wx                64      0.6699      0.3832    27.6
-wy                60      0.9014      0.5209    24.1
+temp              79      0.2642      0.0959    57.7
+rh                66      0.4850      0.2183    56.7
+dew               82      0.2466      0.0852    96.9
+pressure          77      0.2337      0.0802    55.7
+cloud             37      0.7984      0.4937    24.8
+wx                67      0.6691      0.2987    42.5
+wy                59      0.9019      0.4267    50.1
   -> every series reaches a finite val-RMSE minimum (early-stopped),
      no divergence. See plots/learning_curves_seed*.png.
 
@@ -30,13 +30,13 @@ wy                60      0.9014      0.5209    24.1
 2. Ljung-Box on 1-step val residuals (lag 24)   [p > 0.05 = good]
 ------------------------------------------------------------------------
 var            p_value     verdict
-temp            0.4336          OK
-rh                0.49          OK
-dew              0.236          OK
-pressure        0.5491          OK
-cloud            0.969          OK
-wx           1.797e-05    AUTOCORR
-wy              0.2476          OK
+temp            0.4776          OK
+rh              0.8724          OK
+dew             0.3008          OK
+pressure        0.0788          OK
+cloud           0.9725          OK
+wx            2.19e-05    AUTOCORR
+wy              0.2666          OK
   -> 1/7 variables show residual autocorrelation at lag 24.
      Leftover structure at short lead times is expected for a direct
      multi-horizon learner; it flags head-room (longer window / capacity),
@@ -46,13 +46,13 @@ wy              0.2476          OK
 3. Residual normality (D'Agostino K^2)   [p > 0.05 = good]
 ------------------------------------------------------------------------
 var            p_value      mean       std   verdict
-temp                 0    -0.156     1.457  NON-NORM
-rh                   0     0.187     7.087  NON-NORM
-dew                  0    -0.118     1.553  NON-NORM
-pressure             0     0.232     1.725  NON-NORM
-cloud                0    -0.454    29.298  NON-NORM
-wx                   0     0.025     5.404  NON-NORM
-wy                   0     0.081     4.010  NON-NORM
+temp        2.962e-205    -0.138     1.486  NON-NORM
+rh          1.592e-154     0.130     7.162  NON-NORM
+dew                  0    -0.086     1.588  NON-NORM
+pressure             0     0.203     1.708  NON-NORM
+cloud       7.782e-111    -0.194    29.632  NON-NORM
+wx          8.874e-231     0.069     5.397  NON-NORM
+wy                   0     0.111     4.011  NON-NORM
   -> see plots/residual_diag_seed*.png. Non-normal/heavy-tailed residuals
      mean analytical Gaussian intervals are unsafe -> we use the empirical
      residual intervals below instead.
@@ -61,161 +61,13 @@ wy                   0     0.081     4.010  NON-NORM
 4. Empirical forecast intervals (95%) — val coverage
 ------------------------------------------------------------------------
 var            cover       hw@h1      hw@h24  (hw = half-width, real units)
-temp           0.945       0.750       2.586
-rh             0.945       5.112      16.840
-dew            0.945       0.758       4.195
-pressure       0.945       0.713       4.714
-cloud          0.945      42.921      64.800
-wx             0.945       5.025      12.397
-wy             0.945       4.042       7.169
-  -> half-width grows with horizon (see plots/interval_widths_seed*.png),
-     i.e. uncertainty widens over the 24 h lead, as required by §6.
-
-
-========================================================================
-XGBoost weather forecast — diagnostics (PROTOCOL.md §6)
-========================================================================
-
-Model       : 7 multi-output XGBoost regressors (one per target),
-              (120, 11) window -> engineered features -> (24, 7).
-Input set   : 7 weather features ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
-              + 4 cyclical time encodings ['hour_sin', 'hour_cos', 'doy_sin', 'doy_cos'].
-              (precip dropped -> 11-feature input, a deviation from the
-               protocol's 12; agree the shared input set across the group.)
-              Window encoded as recent lags + rolling stats per channel.
-Targets (7) : ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
-Seed        : 1   |   XGB: {'objective': 'reg:squarederror', 'eval_metric': 'rmse', 'tree_method': 'hist', 'n_estimators': 400, 'learning_rate': 0.08, 'max_depth': 6, 'subsample': 0.8, 'colsample_bytree': 0.6, 'min_child_weight': 5.0, 'reg_lambda': 1.0, 'n_jobs': -1}
-
-------------------------------------------------------------------------
-1. Convergence / no-divergence  (val-RMSE learning curves, scaled)
-------------------------------------------------------------------------
-var        best_iter    val_rmse  train_rmse   fit_s
-temp             122      0.2594      0.1039    40.2
-rh                76      0.4833      0.2658    28.0
-dew              120      0.2424      0.0901    39.4
-pressure          86      0.2387      0.0995    32.8
-cloud             46      0.7882      0.5412    20.3
-wx                75      0.6663      0.3607    28.4
-wy                63      0.8994      0.5140    25.7
-  -> every series reaches a finite val-RMSE minimum (early-stopped),
-     no divergence. See plots/learning_curves_seed*.png.
-
-------------------------------------------------------------------------
-2. Ljung-Box on 1-step val residuals (lag 24)   [p > 0.05 = good]
-------------------------------------------------------------------------
-var            p_value     verdict
-temp            0.4582          OK
-rh              0.8786          OK
-dew              0.448          OK
-pressure         0.229          OK
-cloud           0.9409          OK
-wx           0.0001594    AUTOCORR
-wy              0.1053          OK
-  -> 1/7 variables show residual autocorrelation at lag 24.
-     Leftover structure at short lead times is expected for a direct
-     multi-horizon learner; it flags head-room (longer window / capacity),
-     not invalid forecasts.
-
-------------------------------------------------------------------------
-3. Residual normality (D'Agostino K^2)   [p > 0.05 = good]
-------------------------------------------------------------------------
-var            p_value      mean       std   verdict
-temp                 0    -0.153     1.457  NON-NORM
-rh                   0     0.226     7.135  NON-NORM
-dew                  0    -0.108     1.560  NON-NORM
-pressure             0     0.241     1.741  NON-NORM
-cloud                0    -0.526    29.247  NON-NORM
-wx                   0     0.034     5.375  NON-NORM
-wy                   0     0.094     4.001  NON-NORM
-  -> see plots/residual_diag_seed*.png. Non-normal/heavy-tailed residuals
-     mean analytical Gaussian intervals are unsafe -> we use the empirical
-     residual intervals below instead.
-
-------------------------------------------------------------------------
-4. Empirical forecast intervals (95%) — val coverage
-------------------------------------------------------------------------
-var            cover       hw@h1      hw@h24  (hw = half-width, real units)
-temp           0.945       0.823       2.710
-rh             0.945       5.394      16.223
-dew            0.945       0.823       4.771
-pressure       0.945       0.666       4.631
-cloud          0.945      42.410      65.877
-wx             0.945       4.832      12.522
-wy             0.945       4.203       7.269
-  -> half-width grows with horizon (see plots/interval_widths_seed*.png),
-     i.e. uncertainty widens over the 24 h lead, as required by §6.
-
-
-========================================================================
-XGBoost weather forecast — diagnostics (PROTOCOL.md §6)
-========================================================================
-
-Model       : 7 multi-output XGBoost regressors (one per target),
-              (120, 11) window -> engineered features -> (24, 7).
-Input set   : 7 weather features ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
-              + 4 cyclical time encodings ['hour_sin', 'hour_cos', 'doy_sin', 'doy_cos'].
-              (precip dropped -> 11-feature input, a deviation from the
-               protocol's 12; agree the shared input set across the group.)
-              Window encoded as recent lags + rolling stats per channel.
-Targets (7) : ['temp', 'rh', 'dew', 'pressure', 'cloud', 'wx', 'wy']
-Seed        : 2   |   XGB: {'objective': 'reg:squarederror', 'eval_metric': 'rmse', 'tree_method': 'hist', 'n_estimators': 400, 'learning_rate': 0.08, 'max_depth': 6, 'subsample': 0.8, 'colsample_bytree': 0.6, 'min_child_weight': 5.0, 'reg_lambda': 1.0, 'n_jobs': -1}
-
-------------------------------------------------------------------------
-1. Convergence / no-divergence  (val-RMSE learning curves, scaled)
-------------------------------------------------------------------------
-var        best_iter    val_rmse  train_rmse   fit_s
-temp             101      0.2588      0.1150    40.1
-rh                95      0.4799      0.2407    36.4
-dew              103      0.2428      0.0977    44.2
-pressure          90      0.2364      0.0973    39.8
-cloud             47      0.7878      0.5393    22.4
-wx                76      0.6680      0.3583    32.0
-wy                64      0.9018      0.5127    23.9
-  -> every series reaches a finite val-RMSE minimum (early-stopped),
-     no divergence. See plots/learning_curves_seed*.png.
-
-------------------------------------------------------------------------
-2. Ljung-Box on 1-step val residuals (lag 24)   [p > 0.05 = good]
-------------------------------------------------------------------------
-var            p_value     verdict
-temp            0.2967          OK
-rh              0.5803          OK
-dew             0.2823          OK
-pressure        0.1869          OK
-cloud           0.8177          OK
-wx            0.001121    AUTOCORR
-wy              0.1714          OK
-  -> 1/7 variables show residual autocorrelation at lag 24.
-     Leftover structure at short lead times is expected for a direct
-     multi-horizon learner; it flags head-room (longer window / capacity),
-     not invalid forecasts.
-
-------------------------------------------------------------------------
-3. Residual normality (D'Agostino K^2)   [p > 0.05 = good]
-------------------------------------------------------------------------
-var            p_value      mean       std   verdict
-temp                 0    -0.149     1.454  NON-NORM
-rh                   0     0.206     7.085  NON-NORM
-dew                  0    -0.112     1.562  NON-NORM
-pressure             0     0.229     1.725  NON-NORM
-cloud                0    -0.429    29.236  NON-NORM
-wx                   0     0.003     5.389  NON-NORM
-wy                   0     0.071     4.012  NON-NORM
-  -> see plots/residual_diag_seed*.png. Non-normal/heavy-tailed residuals
-     mean analytical Gaussian intervals are unsafe -> we use the empirical
-     residual intervals below instead.
-
-------------------------------------------------------------------------
-4. Empirical forecast intervals (95%) — val coverage
-------------------------------------------------------------------------
-var            cover       hw@h1      hw@h24  (hw = half-width, real units)
-temp           0.945       0.798       2.708
-rh             0.945       5.835      16.137
-dew            0.945       0.848       4.107
-pressure       0.945       0.668       4.751
-cloud          0.945      44.798      63.957
-wx             0.945       4.845      12.339
-wy             0.945       4.234       7.741
+temp           0.945       0.909       2.613
+rh             0.945       5.009      15.587
+dew            0.945       0.834       3.932
+pressure       0.945       0.783       4.585
+cloud          0.945      44.033      65.047
+wx             0.945       5.225      11.800
+wy             0.945       4.186       7.272
   -> half-width grows with horizon (see plots/interval_widths_seed*.png),
      i.e. uncertainty widens over the 24 h lead, as required by §6.
 

@@ -6,7 +6,7 @@ PKG_DIR = Path(__file__).resolve().parent          # weather-xgb/src
 MODEL_DIR = PKG_DIR.parent                          # weather-xgb
 ROOT = MODEL_DIR.parent                             # project root
 
-DATA_CSV = ROOT / "weather_dataset.csv"
+DATA_CSV = ROOT / "data" / "weather_dataset.csv"
 
 RESULTS_DIR = MODEL_DIR / "results"
 PLOTS_DIR = RESULTS_DIR / "plots"

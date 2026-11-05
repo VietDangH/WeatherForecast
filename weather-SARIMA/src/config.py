@@ -21,9 +21,10 @@ from pathlib import Path
 # Paths
 # ---------------------------------------------------------------------------
 THIS_DIR = Path(__file__).resolve().parent
-REPO_ROOT = THIS_DIR.parent
+PKG_ROOT = THIS_DIR.parent              # weather-SARIMA/
+REPO_ROOT = PKG_ROOT.parent             # d:\WeatherForecast
 DEFAULT_DATA_PATH = REPO_ROOT / "data" / "weather_dataset.csv"
-DEFAULT_RESULTS_DIR = THIS_DIR / "results"
+DEFAULT_RESULTS_DIR = PKG_ROOT / "results"
 
 
 # ---------------------------------------------------------------------------

@@ -1,3 +1,10 @@
+import sys
+# Force UTF-8 stdout/stderr so the Vietnamese log messages don't crash on
+# Windows consoles that default to cp1252 (UnicodeEncodeError).
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 import tensorflow as tf
 import numpy as np
 

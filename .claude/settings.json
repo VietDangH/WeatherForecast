@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip list *)",
+      "Bash(python weather-xgb/run.py --smoke)",
+      "Bash(python -c \"import torch; print\\('torch OK', torch.__version__\\)\")",
+      "Bash(python weather-SARIMA/run.py --max-origins 5 --bootstrap 0 --no-plots)",
+      "Bash(python -c ' *)",
+      "Bash(python src/prepare_data.py)",
+      "Bash(python -u run.py)",
+      "Bash(python -u weather-SARIMA/run.py --max-origins 3 --selection-step 2000 --bootstrap 0 --no-plots)",
+      "Bash(python -u src/train.py)",
+      "PowerShell($os = Get-CimInstance Win32_OperatingSystem; \"Free RAM: {0:N1} GB / {1:N1} GB total\" -f \\($os.FreePhysicalMemory/1MB\\), \\($os.TotalVisibleMemorySize/1MB\\))",
+      "Bash(jupyter nbconvert *)"
+    ]
+  }
+}
